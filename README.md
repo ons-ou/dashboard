@@ -28,3 +28,5 @@ The mini cards component displays an icon with a value and a title.
 3. The tooltips in the map aren't working. Try to fix it. If that doesn't work, write an individual component to show the states and their average value.
 
 4. Add more charts to the dashboard.
+
+5. Any code refractoring and cleaning would be handy.
