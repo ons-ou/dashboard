@@ -1,19 +1,10 @@
 <div class="grid-container">
-  <h1 class="mat-h1">Dashboard</h1>
+  <div class=" title">Dashboard</div>
   <mat-grid-list cols="3" rowHeight="350px">
     @for (card of cards | async; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
-        <mat-card class="dashboard-card">
-          <mat-card-header>
-            <mat-card-title>
-              <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu" xPosition="before">
-                <button mat-menu-item>Expand</button>
-              </mat-menu>
-            </mat-card-title>
-          </mat-card-header>
+        <mat-card  class="dashboard-card ">
+          
           <mat-card-content class="dashboard-card-content">
             <div>
               <ng-container [ngSwitch]="card.title">
@@ -26,13 +17,17 @@
                 <ng-template [ngSwitchCase]="'Obs Count'" *ngIf="(obssum$ | async) as sum">
                   <app-card [color]="'lightseagreen'" [icon]="'search'" [title]="'Number of Observations'" [value]="sum"></app-card>
                 </ng-template>
-                <ng-template [ngSwitchCase]="'Map'">
+                <div class ="map-layout" >
+                <ng-template  [ngSwitchCase]="'Map'">
                   <mat-radio-group aria-label="Select an option" [ngModel]="showCounties">
                     <mat-radio-button [value]="false" (click)="showCounties = false">Distribution By State</mat-radio-button>
                     <mat-radio-button [value]="true" (click)="showCounties = true">Distribution By County</mat-radio-button>
                   </mat-radio-group>
+                  <div class="move-to-top">
                   <app-map [showCounties]="showCounties"></app-map>
-                </ng-template>
+                </div>
+                </ng-template></div>
+             
                 <ng-template ngSwitchDefault>
                     Card content here
                 </ng-template>

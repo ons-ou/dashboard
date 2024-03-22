@@ -1,13 +1,32 @@
 .grid-container {
-  margin: 20px;
-}
 
+  height: fit-content;
+  min-height: 80vh;
+
+ margin-top: -20px;
+  background:  linear-gradient(180deg, #F6FCFF 0%, #D0E5FD);
+
+  
+  
+}
+.title{
+  place-self: center;
+
+  text-align: center;
+  
+  font-size: 2rem;
+  line-height: 1.5rem;
+  padding-top: 40px;
+  margin-bottom: 1%;
+  color: #014357;
+  font-weight: 900;
+}
 .dashboard-card {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
+  position: relative;
+  min-width:400px;
+  width: fit-content;
+  border-radius: 25px;
+  min-height: min-content;
 }
 
 .more-button {
@@ -18,4 +37,10 @@
 
 .dashboard-card-content {
   text-align: center;
+  min-height: min-content;
+}
+.move-to-top{
+  margin-top: -35px;
+  display: flex;
+  justify-content: center;
 }

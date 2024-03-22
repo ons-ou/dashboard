@@ -8,13 +8,15 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { Markish, centroid, geo, plot } from '@observablehq/plot';
+import { MapsModule } from '@syncfusion/ej2-angular-maps';
+import { Markish, centroid, dot, geo, plot, tip } from '@observablehq/plot';
 import { Observable, combineLatest, map } from 'rxjs';
 import { feature } from 'topojson';
 import { Feature, Point, GeoJsonProperties } from 'geojson';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AqiDataService } from '../../services/aqi-data.service';
+import * as d3 from 'd3';
 
 @Component({
   selector: 'app-map',
@@ -93,35 +95,48 @@ export class MapComponent {
                 counties,
                 centroid({
                   fill: (d) => data.get(d.id),
-                  tip: true,
+                
                   channels: {
-                    County: (d) => d.properties.name,
-                    State: (d) =>
-                      statemap.get(d.id.slice(0, 2))!.properties!['name'],
+                    County: (d) => {console.log(d);return d.properties.name},
+                  
+                  
                   },
+                
                 })
+                
               ),
-              geo(states, { stroke: 'white' }),
+              geo(states, { stroke: 'black',tip:true }),
+              
             ]
           : [
               geo(
                 states,
                 centroid({
-                  fill: (d) => data.get(d.id),
-                  tip: true,
+                  fill: (d) => {console.log(data.get(d.id));return data.get(d.id)},
+                title:"dfdsc",
+                tooltip:"dscds",
                   channels: {
                     State: (d) =>
-                      statemap.get(d.id.slice(0, 2))!.properties!['name'],
+                      {console.log(d.geometry.coordinates); return statemap.get(d.id.slice(0, 2))!.properties!['name']},
+                     tip:true
+                      
                   },
+                  tip: true,
                 })
               ),
+              geo(states, { stroke: 'black'   , channels: {
+               
+                tooltip: (d) => `State: ${d.properties.name}`,
+              }, }),
+           
             ];
-
+           
         let max = Math.max(...Array.from(data.values()));
         let svg = plot({
           projection: 'albers-usa',
           width: 975,
           height: 590,
+        
           color: {
             type: 'quantize',
             n: Math.min(5, max),
@@ -129,13 +144,28 @@ export class MapComponent {
             scheme: 'reds',
             label: 'Average value',
             legend: true,
+           
           },
+       
           marks: marks,
+          
         });
+        
+        const paths = svg.querySelectorAll('path');
+        paths.forEach((path, index) => {
+          path.setAttribute('id', `path_${index}`);
+        
+        });
+      
+  
         const svgString = new XMLSerializer().serializeToString(svg);
         const safeSvg = this.sanitizer.bypassSecurityTrustHtml(svgString);
         return safeSvg;
       })
     );
+    
+    
   }
+  
+ 
 }

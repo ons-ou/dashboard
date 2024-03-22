@@ -5,8 +5,10 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production --base-href https://SelmaGuedidi.github.io/Dashboard/",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:headless": "ng test --watch=false --browsers=ChromeHeadless"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
     "@observablehq/plot": "^0.6.14",
+    "@syncfusion/ej2-angular-maps": "^25.1.35",
     "@types/d3": "^7.4.3",
     "@types/topojson": "^3.2.6",
     "d3": "^7.9.0",

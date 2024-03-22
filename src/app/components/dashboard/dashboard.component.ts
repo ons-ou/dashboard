@@ -34,6 +34,7 @@ import { Observable } from 'rxjs';
     CommonModule,
     CardComponent,
     MapComponent,
+
   ],
 })
 export class DashboardComponent {
