@@ -5,11 +5,20 @@
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card  class="dashboard-card ">
           
-          <mat-card-content class="dashboard-card-content">
+          <mat-card-content class="dashboard-card-content" *ngIf="(avgaqi$ | async) as avg  ; else loadingSpinner">
             <div>
               <ng-container [ngSwitch]="card.title">
-                <ng-template [ngSwitchCase]="'Avg'" *ngIf="(avgaqi$ | async) as avg">
-                  <app-card [color]="'cornflowerblue'" [icon]="'air'" [title]="'Average value'" [value]="avg"></app-card>
+                <ng-template [ngSwitchCase]="'Avg'" *ngIf="(avgaqi$ | async) as avg  ; else loadingSpinner2 ">
+                
+                    <app-card [color]="'cornflowerblue'" [icon]="'air'" [title]="'Average value'" [value]="avg"></app-card>
+                 
+                  
+                 
+                </ng-template>
+                <ng-template #loadingSpinner2>
+                  <!-- Your loading spinner component goes here -->
+                  <!-- For example, you can use Angular Material's spinner -->
+                  <mat-spinner class="loading2" diameter="50" color="primary"></mat-spinner>
                 </ng-template>
                 <ng-template [ngSwitchCase]="'Records Count'" *ngIf="(data$ | async) as data">
                   <app-card [color]="'dimgrey'" [icon]="'notes'" [title]="'Number of Records'" [value]="data.length"></app-card>
@@ -19,7 +28,7 @@
                 </ng-template>
                 <div class ="map-layout" >
                 <ng-template  [ngSwitchCase]="'Map'">
-                  <mat-radio-group aria-label="Select an option" [ngModel]="showCounties">
+                  <mat-radio-group aria-label="Select an option" [ngModel]="showCounties" *ngIf="(obssum$ | async) as sum">
                     <mat-radio-button [value]="false" (click)="showCounties = false">Distribution By State</mat-radio-button>
                     <mat-radio-button class="layout" [value]="true" (click)="showCounties = true">Distribution By County</mat-radio-button>
                   </mat-radio-group>
@@ -29,11 +38,16 @@
                 </ng-template></div>
              
                 <ng-template ngSwitchDefault>
-                    Card content here
+                 
                 </ng-template>
               </ng-container>
             </div>
           </mat-card-content>
+          <ng-template #loadingSpinner>
+            <!-- Your loading spinner component goes here -->
+            <!-- For example, you can use Angular Material's spinner -->
+            <mat-spinner class="loading" diameter="50" color="primary"></mat-spinner>
+          </ng-template>
         </mat-card>
       </mat-grid-tile>
     }

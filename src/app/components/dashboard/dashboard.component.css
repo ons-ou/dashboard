@@ -47,3 +47,21 @@
 .layout{
   margin-left: 20px;
 }
+.loading{
+  place-self: center;
+  display: flex;
+  text-align: center;
+  justify-self: center;
+  align-items: center;
+  height: 100%;
+
+}
+.loading2{
+  place-self: center;
+  display: flex;
+  text-align: center;
+  justify-self: center;
+  align-items: center;
+  height: 100%;
+  margin-left: 150px;
+}
