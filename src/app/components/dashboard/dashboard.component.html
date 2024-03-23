@@ -21,7 +21,7 @@
                 <ng-template  [ngSwitchCase]="'Map'">
                   <mat-radio-group aria-label="Select an option" [ngModel]="showCounties">
                     <mat-radio-button [value]="false" (click)="showCounties = false">Distribution By State</mat-radio-button>
-                    <mat-radio-button [value]="true" (click)="showCounties = true">Distribution By County</mat-radio-button>
+                    <mat-radio-button class="layout" [value]="true" (click)="showCounties = true">Distribution By County</mat-radio-button>
                   </mat-radio-group>
                   <div class="move-to-top">
                   <app-map [showCounties]="showCounties"></app-map>
