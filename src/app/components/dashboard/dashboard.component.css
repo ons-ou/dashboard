@@ -63,5 +63,8 @@
   justify-self: center;
   align-items: center;
   height: 100%;
-  margin-left: 150px;
+  margin-left: 160px;
+}
+.button{
+  margin-top: -20px;
 }

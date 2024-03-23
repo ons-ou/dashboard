@@ -56,6 +56,9 @@ export class DashboardComponent {
   ngOnChanges(changes: SimpleChange){
     console.log(changes)
   }
+  toggleCounties(value: boolean) {
+    this.showCounties = value;
+}
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
