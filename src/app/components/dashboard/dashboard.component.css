@@ -9,6 +9,38 @@
   
   
 }
+.rounded-button {
+  border-radius: 20px; 
+  padding: 10px 20px; 
+  background-color: dodgerblue; 
+  color: white; 
+  border: none; 
+  outline: none; 
+  cursor: pointer; 
+  transition: background-color 0.2s ease; 
+}
+
+.rounded-button:hover {
+  background-color: lightblue;
+}
+
+.rounded-button:focus {
+  outline: none; 
+}
+.center {
+  text-align: center;
+}
+.rounded-input {
+  border-radius: 20px; 
+  padding: 10px 20px; 
+  border: 1px solid #ccc;
+  outline: none; 
+  transition: border-color 0.2s ease; 
+}
+
+.rounded-input:focus {
+  border-color: dodgerblue; 
+}
 .title{
   place-self: center;
 

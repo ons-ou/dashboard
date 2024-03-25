@@ -31,7 +31,7 @@ export class MapComponent {
 
   @Input()
   showCounties: boolean = true;
-
+  @Input() selectedState: string = '';
   @ViewChild('map', { static: false }) svgContainer!: ElementRef;
 
   sanitizer = inject(DomSanitizer);

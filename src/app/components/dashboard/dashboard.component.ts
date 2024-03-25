@@ -1,4 +1,4 @@
-import { Component, SimpleChange, inject } from '@angular/core';
+import { Component, Input, SimpleChange, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ import { AqiDataService } from '../../services/aqi-data.service';
 import { ComponentType } from '../../enums/component-type.enum';
 import { CardComponent } from '../card/card.component';
 import { MapComponent } from '../map/map.component';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app',
@@ -43,15 +43,43 @@ export class DashboardComponent {
   service = inject(AqiDataService);
   data$ = this.service.aqiData$;
 
-  avgaqi$: Observable<string>
-  obssum$: Observable<string>
-
+  avgaqi$: Observable<string>| null;
+  obssum$: Observable<string>| null;
   showCounties: boolean = false
-
+  stateNames: string[] = []; 
+  selectedState: string = '';
+  selectedOption$: boolean = this.selectedState !== '';
   constructor(){
     this.avgaqi$ = this.service.averageAqi()
     this.obssum$ = this.service.numberOfObservations()
+
   }
+  ngOnInit() {
+    this.service.aqiData$.subscribe(data => {
+      this.stateNames = Array.from(new Set(data.map((item: { state_name: any; }) => item.state_name)));
+    });}
+    search() {
+      this.selectedOption$ = this.selectedState !== '';
+      if (this.selectedState) {
+        console.log(this.selectedState);
+        this.service.averageAqiForState(this.selectedState).subscribe(avgAqi => {
+          console.log(avgAqi);
+          this.avgaqi$ = of(avgAqi); 
+        });
+        this.service.numberOfObservationsForState(this.selectedState).subscribe(obsSum => {
+          console.log(obsSum);
+          this.obssum$ = of(obsSum); 
+        });
+        this.data$ = this.service.getDataForState(this.selectedState);
+      } else {
+        this.avgaqi$ = this.service.averageAqi(); 
+        this.obssum$ = this.service.numberOfObservations();
+        this.data$ = this.service.aqiData$;
+      }
+    }
+
+
+
 
   ngOnChanges(changes: SimpleChange){
     console.log(changes)
@@ -59,6 +87,7 @@ export class DashboardComponent {
   toggleCounties(value: boolean) {
     this.showCounties = value;
 }
+
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {

@@ -21,6 +21,25 @@ export class AqiDataService {
       })
     )
   }
+  averageAqiForState(stateName: string): Observable<string> {
+    return this.aqiData$.pipe(
+      map((aqi) => {
+        // Filtrer les données pour obtenir seulement celles de l'état spécifié
+        const stateData = aqi.filter((item: any) => item.state_name === stateName);
+        
+        // Vérifier si des données ont été trouvées pour l'état spécifié
+        if (stateData.length === 0) {
+          throw new Error('No data found for the specified state');
+        }
+  
+        // Calculer la moyenne de qualité de l'air pour l'état spécifié
+        const totalAqi = stateData.reduce((acc: any, item: any) => acc + parseFloat(item.air_quality_index), 0);
+        const avgAqi = totalAqi / stateData.length;
+        return avgAqi.toLocaleString();
+      })
+    );
+  }
+  
 
   averageAqiByCounty(){
     return this.aqiData$.pipe(
@@ -82,8 +101,30 @@ export class AqiDataService {
       })
     )
 
+  
   }
+  numberOfObservationsForState(stateName: string): Observable<string> {
+    return this.aqiData$.pipe(
+      map((data) => {
+      
+        const stateData = data.filter((item: any) => item.state_name === stateName);
 
+        const sum = stateData.reduce((acc: number, item: any) => acc + parseFloat(item.observation_count), 0);
+        return sum.toLocaleString();
+      })
+    );
+  }
+  
+  getDataForState(state: string): Observable<any[]> {
+    return this.aqiData$.pipe(
+      map(data => {
+        if (!data || data.length === 0) {
+          return [];
+        }
+        return data.filter((item: { state_name: string; }) => item.state_name === state);
+      })
+    );
+  }
   constructor(private http: HttpClient) {
     this.aqiData$ = this.fetchAndProcessCsv('assets/aqi_data.csv', 1024 * 8)
   }

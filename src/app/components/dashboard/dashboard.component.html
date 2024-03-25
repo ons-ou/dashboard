@@ -1,5 +1,13 @@
 <div class="grid-container">
   <div class=" title">Dashboard</div>
+  <div class="search-filter center">
+    <select class="rounded-input" [(ngModel)]="selectedState">
+      <option value="" disabled selected>Select a State</option>
+      <option *ngFor="let state of stateNames" [value]="state">{{ state }}</option>
+    </select>
+    <button class="rounded-button" (click)="search()">Search</button>
+  </div>
+
   <mat-grid-list cols="3" rowHeight="350px">
     @for (card of cards | async; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
@@ -29,13 +37,13 @@
                 <ng-template  [ngSwitchCase]="'Map'">
                   <div class="button" >
                   <mat-radio-group aria-label="Select an option" [ngModel]="showCounties" *ngIf="(obssum$ | async) as sum">
-                    <mat-radio-button [value]="false" (click)="toggleCounties(false)">Distribution By State</mat-radio-button>
+                    <mat-radio-button *ngIf="!selectedOption$" [value]="false" (click)="toggleCounties(false)">Distribution By State</mat-radio-button>
                     <mat-radio-button class="layout" [value]="true" (click)="toggleCounties(true)">Distribution By County</mat-radio-button>
                 </mat-radio-group>
               </div>
-                  <div class="move-to-top">
-                  <app-map [showCounties]="showCounties"></app-map>
-                </div>
+                    <div class="move-to-top">
+                    <app-map [selectedState]="selectedState"  [showCounties]="showCounties"></app-map>
+                  </div>
                 </ng-template></div>
              
                 <ng-template ngSwitchDefault>
