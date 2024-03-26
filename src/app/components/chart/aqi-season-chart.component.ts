@@ -12,7 +12,7 @@ import { Observable, map } from 'rxjs';
 })
 export class AqiSeasonChartComponent implements OnInit {
   private _selectedState: string = '';
-  private _selectedYear: string = '2017'; // Default year
+  private _selectedYear: string = ''; // Default year
 
   dataPoints$: Observable<any> | undefined;
   chartOptions: any = {};
@@ -24,7 +24,7 @@ export class AqiSeasonChartComponent implements OnInit {
   }
 
   @Input() set selectedYear(value: string) {
-    this._selectedYear = value || '2017'; // Use default year if not provided
+    this._selectedYear = value ; // Use default year if not provided
 
     this.updateChartOptions();
   }
@@ -34,10 +34,22 @@ export class AqiSeasonChartComponent implements OnInit {
   ngOnInit(): void {
     this.updateChartOptions(); // Ensure initial chart setup
   }
-
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedState'] || changes['selectedYear']) {
+      this.updateChartOptions();
+    }
+  }
   private updateChartOptions(): void {
    // Exit if state is not selected
+   console.log("aaaaaa",this._selectedYear,this._selectedState)
+   if  (this._selectedYear === "" && this._selectedState === "") {
+    this.dataPoints$ = this.aqiDataService.getAvgAqiForAllSeasons().pipe(
+
+      map((data: any[]) =>  data.map(item => ({ label: item.season, y: item.avgAqi })))
+    );
    
+ 
+  }else
     if (this._selectedState === "") {
       this.dataPoints$ = this.aqiDataService.getAvgAqiForAllSeasonsAndYear(this._selectedYear).pipe(
 
@@ -45,14 +57,14 @@ export class AqiSeasonChartComponent implements OnInit {
       );
      
    
-    } else {
+    } else   {
       this.dataPoints$ = this.aqiDataService.getAvgAqiForAllSeasonsByStateAndYear(this._selectedState, this._selectedYear).pipe(
         map((data: any[]) => data.map(item => ({ label: item.season, y: item.avgAqi })))
       );
     }
-
+   
     this.dataPoints$.subscribe(dataPoints => {
-     
+      console.log("aaaaaab",this._selectedYear,this._selectedState,dataPoints)
       this.chartOptions = {
         title: {
           text: "AQI by Season"

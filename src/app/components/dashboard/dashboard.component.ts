@@ -71,7 +71,7 @@ export class DashboardComponent {
     this.selectedStateS = this.selectedState;
     this.selectedYearS = this.selectedYear;
    
-    if (this.selectedStateS) {
+    if (this.selectedStateS && this.selectedYearS) {
       console.log(this.selectedStateS);
       this.service.averageAqiForStateAndYear(this.selectedStateS, this.selectedYear).subscribe(avgAqi => {
         console.log(avgAqi);
