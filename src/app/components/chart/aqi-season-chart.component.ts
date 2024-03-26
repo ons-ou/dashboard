@@ -25,7 +25,7 @@ export class AqiSeasonChartComponent implements OnInit {
 
   @Input() set selectedYear(value: string) {
     this._selectedYear = value || '2017'; // Use default year if not provided
-    console.log("aaa", this._selectedYear)
+
     this.updateChartOptions();
   }
 
@@ -37,11 +37,11 @@ export class AqiSeasonChartComponent implements OnInit {
 
   private updateChartOptions(): void {
    // Exit if state is not selected
-    console.log("hhhh",this._selectedYear)
+   
     if (this._selectedState === "") {
       this.dataPoints$ = this.aqiDataService.getAvgAqiForAllSeasonsAndYear(this._selectedYear).pipe(
 
-        map((data: any[]) => {console.log("hhhh",data.map(item => ({ label: item.season, y: item.avgAqi })));return data.map(item => ({ label: item.season, y: item.avgAqi }))})
+        map((data: any[]) =>  data.map(item => ({ label: item.season, y: item.avgAqi })))
       );
      
    
@@ -52,7 +52,7 @@ export class AqiSeasonChartComponent implements OnInit {
     }
 
     this.dataPoints$.subscribe(dataPoints => {
-      console.log("datapoints",dataPoints)
+     
       this.chartOptions = {
         title: {
           text: "AQI by Season"
