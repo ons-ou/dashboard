@@ -125,6 +125,56 @@ export class AqiDataService {
       })
     );
   }
+  getAvgAqiForSeason(season: string): Observable<string> {
+    return this.aqiData$.pipe(
+      map((data: any[]) => {
+        if (!data || data.length === 0) {
+          return "Data not available"; 
+        }
+        const seasonData = data.filter(item => item.season === season);
+        if (seasonData.length === 0) {
+          return "No data for the specified season"; 
+        }
+        const totalAqi = seasonData.reduce((acc, item) => acc + parseFloat(item.air_quality_index), 0);
+        const avgAqi = totalAqi / seasonData.length;
+        return avgAqi.toLocaleString();
+      })
+    );
+  }
+  getAvgAqiForAllSeasons(){
+    return this.aqiData$.pipe(
+      map(data => {
+        const seasons = ['Winter', 'Spring', 'Summer', 'Fall']; 
+        const avgAqiBySeason: any[] = [];
+
+        seasons.forEach(season => {
+          const seasonData = data.filter((item: { season: string; }) => item.season === season);
+          const totalAqi = seasonData.reduce((acc: number, item: { air_quality_index: string; }) => acc + parseFloat(item.air_quality_index), 0);
+          const avgAqi = totalAqi / seasonData.length;
+          avgAqiBySeason.push({ season: season, avgAqi: avgAqi });
+        });
+        return avgAqiBySeason;
+      })
+    );
+  }
+  
+getAvgAqiForAllSeasonsByState(stateName: string) {
+    return this.aqiData$.pipe(
+        map(data => {
+            const seasons = ['Winter', 'Spring', 'Summer', 'Fall'];
+            const avgAqiBySeason: any[] = [];
+
+            seasons.forEach(season => {
+                const seasonData = data.filter((item: { season: string, state_name: string }) => item.season === season && item.state_name === stateName);
+                const totalAqi = seasonData.reduce((acc: number, item: { air_quality_index: string }) => acc + parseFloat(item.air_quality_index), 0);
+                const avgAqi = totalAqi / seasonData.length;
+                avgAqiBySeason.push({ season: season, avgAqi: avgAqi });
+            });
+            return avgAqiBySeason;
+        })
+    );
+}
+  
   constructor(private http: HttpClient) {
     this.aqiData$ = this.fetchAndProcessCsv('assets/aqi_data.csv', 1024 * 8)
   }

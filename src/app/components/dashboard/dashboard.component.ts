@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChange, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChange, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -15,7 +15,7 @@ import { ComponentType } from '../../enums/component-type.enum';
 import { CardComponent } from '../card/card.component';
 import { MapComponent } from '../map/map.component';
 import { Observable, of } from 'rxjs';
-
+import { AqiSeasonChartComponent } from '../chart/aqi-season-chart.component';
 @Component({
   selector: 'app',
   templateUrl: './dashboard.component.html',
@@ -34,6 +34,7 @@ import { Observable, of } from 'rxjs';
     CommonModule,
     CardComponent,
     MapComponent,
+    AqiSeasonChartComponent,
 
   ],
 })
@@ -48,7 +49,8 @@ export class DashboardComponent {
   showCounties: boolean = false
   stateNames: string[] = []; 
   selectedState: string = '';
-  selectedOption$: boolean = this.selectedState !== '';
+  selectedStateS: string = '';
+  selectedOption$: boolean = this.selectedStateS !== '';
   constructor(){
     this.avgaqi$ = this.service.averageAqi()
     this.obssum$ = this.service.numberOfObservations()
@@ -59,23 +61,27 @@ export class DashboardComponent {
       this.stateNames = Array.from(new Set(data.map((item: { state_name: any; }) => item.state_name)));
     });}
     search() {
-      this.selectedOption$ = this.selectedState !== '';
-      if (this.selectedState) {
-        console.log(this.selectedState);
-        this.service.averageAqiForState(this.selectedState).subscribe(avgAqi => {
+      console.log(this.selectedState);
+      this.selectedStateS=this.selectedState;
+      this.selectedOption$ = this.selectedStateS !== '';
+      if (this.selectedStateS) {
+        console.log(this.selectedStateS);
+        this.service.averageAqiForState(this.selectedStateS).subscribe(avgAqi => {
           console.log(avgAqi);
           this.avgaqi$ = of(avgAqi); 
         });
-        this.service.numberOfObservationsForState(this.selectedState).subscribe(obsSum => {
+        this.service.numberOfObservationsForState(this.selectedStateS).subscribe(obsSum => {
           console.log(obsSum);
           this.obssum$ = of(obsSum); 
         });
-        this.data$ = this.service.getDataForState(this.selectedState);
+        this.data$ = this.service.getDataForState(this.selectedStateS);
       } else {
         this.avgaqi$ = this.service.averageAqi(); 
         this.obssum$ = this.service.numberOfObservations();
         this.data$ = this.service.aqiData$;
       }
+      console.log(this.selectedStateS);
+
     }
 
 

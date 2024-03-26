@@ -22,6 +22,7 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "@canvasjs/angular-charts": "^1.2.0",
     "@observablehq/plot": "^0.6.14",
     "@syncfusion/ej2-angular-maps": "^25.1.35",
     "@types/d3": "^7.4.3",

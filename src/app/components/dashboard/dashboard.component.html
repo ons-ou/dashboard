@@ -1,4 +1,5 @@
 <div class="grid-container">
+ 
   <div class=" title">Dashboard</div>
   <div class="search-filter center">
     <select class="rounded-input" [(ngModel)]="selectedState">
@@ -8,8 +9,13 @@
     <button class="rounded-button" (click)="search()">Search</button>
   </div>
 
+  <app-aqi-season-chart [selectedState]="selectedStateS" ></app-aqi-season-chart>
+
+  
   <mat-grid-list cols="3" rowHeight="350px">
+
     @for (card of cards | async; track card) {
+      
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card  class="dashboard-card ">
           
@@ -33,6 +39,7 @@
                 <ng-template [ngSwitchCase]="'Obs Count'" *ngIf="(obssum$ | async) as sum">
                   <app-card [color]="'lightseagreen'" [icon]="'search'" [title]="'Number of Observations'" [value]="sum"></app-card>
                 </ng-template>
+             
                 <div class ="map-layout" >
                 <ng-template  [ngSwitchCase]="'Map'">
                   <div class="button" >
@@ -49,6 +56,7 @@
                 <ng-template ngSwitchDefault>
                  
                 </ng-template>
+                
               </ng-container>
             </div>
           </mat-card-content>
@@ -60,9 +68,20 @@
         </mat-card>
       </mat-grid-tile>
     }
+  
+ 
   </mat-grid-list>
+ 
+   
+  
+
+  
+
+ 
 </div>
 
 <ng-template #loading>
+  
   <mat-spinner></mat-spinner>
+  
 </ng-template>
