@@ -100,3 +100,13 @@
 .button{
   margin-top: -20px;
 }
+.map-layout{
+  min-height:1000px;
+  min-width: 700px;
+}
+.seosonaltrends{
+  margin-top: 600px;
+}
+.button{
+  margin-left: 10px;
+}

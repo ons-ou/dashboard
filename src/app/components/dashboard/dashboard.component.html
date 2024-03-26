@@ -2,14 +2,18 @@
  
   <div class=" title">Dashboard</div>
   <div class="search-filter center">
-    <select class="rounded-input" [(ngModel)]="selectedState">
+    <select class="rounded-input button" [(ngModel)]="selectedState">
       <option value="" disabled selected>Select a State</option>
       <option *ngFor="let state of stateNames" [value]="state">{{ state }}</option>
     </select>
-    <button class="rounded-button" (click)="search()">Search</button>
+    <select class="rounded-input button" [(ngModel)]="selectedYear">
+      <option value="" disabled selected>Select a Year</option>
+      <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+    </select>
+    <button class="rounded-button button" (click)="search()">Search</button>
   </div>
 
-  <app-aqi-season-chart [selectedState]="selectedStateS" ></app-aqi-season-chart>
+  <app-aqi-season-chart [selectedState]="selectedStateS" [selectedYear]="selectedYear" ></app-aqi-season-chart>
 
   
   <mat-grid-list cols="3" rowHeight="350px">
@@ -40,19 +44,24 @@
                   <app-card [color]="'lightseagreen'" [icon]="'search'" [title]="'Number of Observations'" [value]="sum"></app-card>
                 </ng-template>
              
-                <div class ="map-layout" >
+                
                 <ng-template  [ngSwitchCase]="'Map'">
+             
                   <div class="button" >
                   <mat-radio-group aria-label="Select an option" [ngModel]="showCounties" *ngIf="(obssum$ | async) as sum">
-                    <mat-radio-button *ngIf="!selectedOption$" [value]="false" (click)="toggleCounties(false)">Distribution By State</mat-radio-button>
+                    <mat-radio-button [value]="false" (click)="toggleCounties(false)">Distribution By State</mat-radio-button>
                     <mat-radio-button class="layout" [value]="true" (click)="toggleCounties(true)">Distribution By County</mat-radio-button>
                 </mat-radio-group>
               </div>
                     <div class="move-to-top">
                     <app-map [selectedState]="selectedState"  [showCounties]="showCounties"></app-map>
                   </div>
-                </ng-template></div>
              
+                </ng-template>
+              
+                
+               
+               
                 <ng-template ngSwitchDefault>
                  
                 </ng-template>
@@ -65,6 +74,7 @@
             <!-- For example, you can use Angular Material's spinner -->
             <mat-spinner class="loading" diameter="50" color="primary"></mat-spinner>
           </ng-template>
+         
         </mat-card>
       </mat-grid-tile>
     }

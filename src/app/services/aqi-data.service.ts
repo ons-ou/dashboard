@@ -21,20 +21,20 @@ export class AqiDataService {
       })
     )
   }
-  averageAqiForState(stateName: string): Observable<string> {
+  averageAqiForStateAndYear(stateName: string, year: string): Observable<string> {
     return this.aqiData$.pipe(
       map((aqi) => {
-        // Filtrer les données pour obtenir seulement celles de l'état spécifié
-        const stateData = aqi.filter((item: any) => item.state_name === stateName);
-        
-        // Vérifier si des données ont été trouvées pour l'état spécifié
-        if (stateData.length === 0) {
-          throw new Error('No data found for the specified state');
+        // Filter the data to get only those for the specified state and year
+        const stateYearData = aqi.filter((item: any) => item.state_name === stateName && item.year === year);
+  
+        // Check if data was found for the specified state and year
+        if (stateYearData.length === 0) {
+          throw new Error('No data found for the specified state and year');
         }
   
-        // Calculer la moyenne de qualité de l'air pour l'état spécifié
-        const totalAqi = stateData.reduce((acc: any, item: any) => acc + parseFloat(item.air_quality_index), 0);
-        const avgAqi = totalAqi / stateData.length;
+        // Calculate the average air quality index for the specified state and year
+        const totalAqi = stateYearData.reduce((acc: any, item: any) => acc + parseFloat(item.air_quality_index), 0);
+        const avgAqi = totalAqi / stateYearData.length;
         return avgAqi.toLocaleString();
       })
     );
@@ -65,7 +65,7 @@ export class AqiDataService {
     )
   }
 
-  averageAqiByState(){
+  averageAqiByStateAndYear(){
     return this.aqiData$.pipe(
       map((aqi)=> {
         const groupedData = aqi.reduce((acc: any, item: any) => {
@@ -88,6 +88,24 @@ export class AqiDataService {
       })
     )
   }
+  averageAqiByState(stateName: string): Observable<string> {
+    return this.aqiData$.pipe(
+      map((aqi) => {
+        // Filtrer les données pour obtenir seulement celles de l'état spécifié
+        const stateData = aqi.filter((item: any) => item.state_name === stateName);
+        
+        // Vérifier si des données ont été trouvées pour l'état spécifié
+        if (stateData.length === 0) {
+          throw new Error('No data found for the specified state');
+        }
+  
+        // Calculer la moyenne de qualité de l'air pour l'état spécifié
+        const totalAqi = stateData.reduce((acc: any, item: any) => acc + parseFloat(item.air_quality_index), 0);
+        const avgAqi = totalAqi / stateData.length;
+        return avgAqi.toLocaleString();
+      })
+    );
+  }
 
   numberOfObservations(){
     return this.aqiData$.pipe(
@@ -103,6 +121,18 @@ export class AqiDataService {
 
   
   }
+  numberOfObservationsForStateAndYear(stateName: string, year: string): Observable<string> {
+    return this.aqiData$.pipe(
+      map((data) => {
+        // Filter the data to get only those for the specified state and year
+        const stateYearData = data.filter((item: any) => item.state_name === stateName && item.year === year);
+  
+        // Calculate the total number of observations for the specified state and year
+        const sum = stateYearData.reduce((acc: number, item: any) => acc + parseFloat(item.observation_count), 0);
+        return sum.toLocaleString();
+      })
+    );
+  }
   numberOfObservationsForState(stateName: string): Observable<string> {
     return this.aqiData$.pipe(
       map((data) => {
@@ -114,8 +144,23 @@ export class AqiDataService {
       })
     );
   }
-  
-  getDataForState(state: string): Observable<any[]> {
+
+
+  getDataForStateAndYear(state: string, year: string): Observable<any[]> {
+    return this.aqiData$.pipe(
+      map(data => {
+        // Filter the data to get only those for the specified state and year
+        const stateYearData = data.filter((item: { state_name: string; year: string }) => item.state_name === state && item.year === year);
+        
+        if (!stateYearData || stateYearData.length === 0) {
+          return [];
+        }
+        
+        return stateYearData;
+      })
+    );
+  }
+ getDataForState(state: string): Observable<any[]> {
     return this.aqiData$.pipe(
       map(data => {
         if (!data || data.length === 0) {
@@ -125,6 +170,7 @@ export class AqiDataService {
       })
     );
   }
+  
   getAvgAqiForSeason(season: string): Observable<string> {
     return this.aqiData$.pipe(
       map((data: any[]) => {
@@ -174,6 +220,89 @@ getAvgAqiForAllSeasonsByState(stateName: string) {
         })
     );
 }
+getAvgAqiForAllSeasonsAndYear(year: string): Observable<any[]> {
+  return this.aqiData$.pipe(
+    map(data => {
+      const seasons = ['Winter', 'Spring', 'Summer', 'Fall']; 
+      const avgAqiBySeason: any[] = [];
+      
+      seasons.forEach(season => {
+        const seasonData = data.filter((item: { season: string; year: string }) => item.season === season && item.year === year);
+        console.log("data",seasonData)
+        const totalAqi = seasonData.reduce((acc: number, item: { air_quality_index: string; }) => acc + parseFloat(item.air_quality_index), 0);
+        const avgAqi = totalAqi / seasonData.length;
+        avgAqiBySeason.push({ season: season, avgAqi: avgAqi });
+      });
+      return avgAqiBySeason;
+    })
+  );
+}
+
+getAvgAqiForAllSeasonsByStateAndYear(stateName: string, year: string): Observable<any[]> {
+  return this.aqiData$.pipe(
+    map(data => {
+      const seasons = ['Winter', 'Spring', 'Summer', 'Fall']; 
+      const avgAqiBySeason: any[] = [];
+
+      seasons.forEach(season => {
+        const seasonData = data.filter((item: { season: string; state_name: string; year: string }) => item.season === season && item.state_name === stateName && item.year === year);
+        const totalAqi = seasonData.reduce((acc: number, item: { air_quality_index: string; }) => acc + parseFloat(item.air_quality_index), 0);
+        const avgAqi = totalAqi / seasonData.length;
+        avgAqiBySeason.push({ season: season, avgAqi: avgAqi });
+      });
+      return avgAqiBySeason;
+    })
+  );
+}
+
+averageAqiByYear() {
+  return this.aqiData$.pipe(
+    map(aqi => {
+      const groupedData = aqi.reduce((acc: any, item: any) => {
+        const year = item.year;
+        if (!acc[year]) {
+          acc[year] = [];
+        }
+        acc[year].push(item);
+        return acc;
+      }, {});
+
+      const result = Object.keys(groupedData).map(year => {
+        const yearData = groupedData[year];
+        const totalAqi = yearData.reduce((acc: any, item: any) => acc + parseFloat(item.air_quality_index), 0);
+        const avgAqi = totalAqi / yearData.length;
+        return { year: year, avgAqi: avgAqi };
+      });
+
+      return result;
+    })
+  );
+}
+
+getAvgAqiByYear(year: string): Observable<string> {
+  return this.aqiData$.pipe(
+    map((data: any[]) => {
+      const yearData = data.filter(item => item.year === year);
+      if (yearData.length === 0) {
+        return "No data for the specified year"; 
+      }
+      const totalAqi = yearData.reduce((acc, item) => acc + parseFloat(item.air_quality_index), 0);
+      const avgAqi = totalAqi / yearData.length;
+      return avgAqi.toLocaleString();
+    })
+  );
+}
+
+getDataForYear(year: string): Observable<any[]> {
+  return this.aqiData$.pipe(
+    map(data => {
+      if (!data || data.length === 0) {
+        return [];
+      }
+      return data.filter((item: { year: string }) => item.year === year);
+    })
+  );
+}
   
   constructor(private http: HttpClient) {
     this.aqiData$ = this.fetchAndProcessCsv('assets/aqi_data.csv', 1024 * 8)
@@ -206,7 +335,7 @@ getAvgAqiForAllSeasonsByState(stateName: string) {
               for (let j = 0; j < headers.length; j++) {
                 obj[headers[j]] = currentline[j].trim();
               }
-              
+
               result.push(obj);
             }
           }
@@ -214,6 +343,23 @@ getAvgAqiForAllSeasonsByState(stateName: string) {
         }
 
         return result;
+      })
+    );
+  }
+
+  getAvgAqiForSeasonAndYear(season: string, year: string): Observable<string> {
+    return this.aqiData$.pipe(
+      map((data: any[]) => {
+        if (!data || data.length === 0) {
+          return "Data not available";
+        }
+        const seasonData = data.filter(item => item.season === season && item.year === year);
+        if (seasonData.length === 0) {
+          return "No data for the specified season and year";
+        }
+        const totalAqi = seasonData.reduce((acc, item) => acc + parseFloat(item.air_quality_index), 0);
+        const avgAqi = totalAqi / seasonData.length;
+        return avgAqi.toLocaleString();
       })
     );
   }

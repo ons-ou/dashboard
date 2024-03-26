@@ -52,7 +52,7 @@ export class MapComponent {
     let us$ = this.http.get<any>('assets/counties-albers-10m.json');
     let aqiData$ = this.showCounties
       ? this.service.averageAqiByCounty()
-      : this.service.averageAqiByState();
+      : this.service.averageAqiByStateAndYear();
 
     this.counties$ = us$.pipe(
       map((us: any) => feature(us, us.objects.counties))

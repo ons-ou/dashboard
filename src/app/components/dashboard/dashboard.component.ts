@@ -48,43 +48,47 @@ export class DashboardComponent {
   obssum$: Observable<string>| null;
   showCounties: boolean = false
   stateNames: string[] = []; 
+  years: string[] = []; 
   selectedState: string = '';
+  selectedYear: string = '';
+  selectedYearS: string = '';
   selectedStateS: string = '';
-  selectedOption$: boolean = this.selectedStateS !== '';
-  constructor(){
-    this.avgaqi$ = this.service.averageAqi()
-    this.obssum$ = this.service.numberOfObservations()
 
+  constructor() {
+    this.avgaqi$ = this.service.averageAqi();
+    this.obssum$ = this.service.numberOfObservations();
   }
+
   ngOnInit() {
     this.service.aqiData$.subscribe(data => {
       this.stateNames = Array.from(new Set(data.map((item: { state_name: any; }) => item.state_name)));
-    });}
-    search() {
-      console.log(this.selectedState);
-      this.selectedStateS=this.selectedState;
-      this.selectedOption$ = this.selectedStateS !== '';
-      if (this.selectedStateS) {
-        console.log(this.selectedStateS);
-        this.service.averageAqiForState(this.selectedStateS).subscribe(avgAqi => {
-          console.log(avgAqi);
-          this.avgaqi$ = of(avgAqi); 
-        });
-        this.service.numberOfObservationsForState(this.selectedStateS).subscribe(obsSum => {
-          console.log(obsSum);
-          this.obssum$ = of(obsSum); 
-        });
-        this.data$ = this.service.getDataForState(this.selectedStateS);
-      } else {
-        this.avgaqi$ = this.service.averageAqi(); 
-        this.obssum$ = this.service.numberOfObservations();
-        this.data$ = this.service.aqiData$;
-      }
+      this.years = ["2016", "2017"]; // You can initialize years here or populate it from service if available.
+    });
+  }
+
+  search() {
+    console.log(this.selectedState);
+    this.selectedStateS = this.selectedState;
+    this.selectedYearS = this.selectedYear;
+   
+    if (this.selectedStateS) {
       console.log(this.selectedStateS);
-
+      this.service.averageAqiForStateAndYear(this.selectedStateS, this.selectedYear).subscribe(avgAqi => {
+        console.log(avgAqi);
+        this.avgaqi$ = of(avgAqi);
+      });
+      this.service.numberOfObservationsForStateAndYear(this.selectedStateS, this.selectedYear).subscribe(obsSum => {
+        console.log(obsSum);
+        this.obssum$ = of(obsSum);
+      });
+      this.data$ = this.service.getDataForStateAndYear(this.selectedStateS, this.selectedYear);
+    } else {
+      this.avgaqi$ = this.service.averageAqi();
+      this.obssum$ = this.service.numberOfObservations();
+      this.data$ = this.service.aqiData$;
     }
-
-
+    console.log(this.selectedStateS,this.selectedYearS);
+  }
 
 
   ngOnChanges(changes: SimpleChange){
@@ -104,7 +108,7 @@ export class DashboardComponent {
           { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD  },
           { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP  },
           { title: 'Distribution', cols: 3, rows: 2 },
-          { title: 'Seasonal Trends', cols: 3, rows: 1 },
+          { title: 'Seasonal Trends', cols: 3, rows: 1,componentType: ComponentType.SeasonalTrends },
           { title: 'Quality', cols: 3, rows: 1 },
         ];
       }
@@ -115,7 +119,7 @@ export class DashboardComponent {
         { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
         { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP },
         { title: 'Distribution', cols: 1, rows: 2 },
-        { title: 'Seasonal Trends', cols: 2, rows: 1 },
+        { title: 'Seasonal Trends', cols: 2, rows: 1 ,componentType: ComponentType.SeasonalTrends },
         { title: 'Quality', cols: 2, rows: 1 },
       ];
     })
