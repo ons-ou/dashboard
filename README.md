@@ -19,7 +19,7 @@ Reference: 'https://observablehq.com/@observablehq/plot-choropleth?intent=fork'
 ### Mini Card
 The mini cards component displays an icon with a value and a title.
 
-###charts
+### Charts
 
 season chart:
 
