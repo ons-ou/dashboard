@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, SimpleChange, inject } from '@angular/core';
+import { Component, SimpleChange, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -10,12 +10,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
 import { MatCardModule } from '@angular/material/card';
-import { AqiDataService } from '../../services/aqi-data.service';
+
 import { ComponentType } from '../../enums/component-type.enum';
 import { CardComponent } from '../card/card.component';
 import { MapComponent } from '../map/map.component';
-import { Observable, of } from 'rxjs';
-import { AqiSeasonChartComponent } from '../chart/aqi-season-chart.component';
+import { SeasonalTrendsComponent } from '../seasonal-trends/seasonal-trends.component';
+import { FiltersComponent } from '../filters/filters.component';
+import { DataService } from '../../services/data.service';
+import { NamesListComponent } from '../names-list/names-list.component';
+
 @Component({
   selector: 'app',
   templateUrl: './dashboard.component.html',
@@ -30,97 +33,52 @@ import { AqiSeasonChartComponent } from '../chart/aqi-season-chart.component';
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    NamesListComponent,
     MatCardModule,
     CommonModule,
     CardComponent,
     MapComponent,
-    AqiSeasonChartComponent,
-
+    FiltersComponent,
+    SeasonalTrendsComponent
   ],
 })
 export class DashboardComponent {
 [x: string]: any;
   private breakpointObserver = inject(BreakpointObserver);
-  service = inject(AqiDataService);
-  data$ = this.service.aqiData$;
+  service = inject(DataService);
 
-  avgaqi$: Observable<string>| null;
-  obssum$: Observable<string>| null;
+  avgaqi$ = this.service.averageValue$;
+  observationSum$ = this.service.numberOfObservations$;
+  recordsSum = this.service.numberOfRecords$;
+
   showCounties: boolean = false
-  stateNames: string[] = []; 
-  years: string[] = []; 
-  selectedState: string = '';
-  selectedYear: string = '';
-  selectedYearS: string = '';
-  selectedStateS: string = '';
-
-  constructor() {
-    this.avgaqi$ = this.service.averageAqi();
-    this.obssum$ = this.service.numberOfObservations();
-  }
-
-  ngOnInit() {
-    this.service.aqiData$.subscribe(data => {
-      this.stateNames = Array.from(new Set(data.map((item: { state_name: any; }) => item.state_name)));
-      this.years = ["2016", "2017"]; // You can initialize years here or populate it from service if available.
-    });
-  }
-
-  search() {
-    console.log(this.selectedState);
-    this.selectedStateS = this.selectedState;
-    this.selectedYearS = this.selectedYear;
-   
-    if (this.selectedStateS && this.selectedYearS) {
-      console.log(this.selectedStateS);
-      this.service.averageAqiForStateAndYear(this.selectedStateS, this.selectedYear).subscribe(avgAqi => {
-        console.log(avgAqi);
-        this.avgaqi$ = of(avgAqi);
-      });
-      this.service.numberOfObservationsForStateAndYear(this.selectedStateS, this.selectedYear).subscribe(obsSum => {
-        console.log(obsSum);
-        this.obssum$ = of(obsSum);
-      });
-      this.data$ = this.service.getDataForStateAndYear(this.selectedStateS, this.selectedYear);
-    } else {
-      this.avgaqi$ = this.service.averageAqi();
-      this.obssum$ = this.service.numberOfObservations();
-      this.data$ = this.service.aqiData$;
-    }
-    console.log(this.selectedStateS,this.selectedYearS);
-  }
-
 
   ngOnChanges(changes: SimpleChange){
     console.log(changes)
   }
-  toggleCounties(value: boolean) {
-    this.showCounties = value;
-}
-
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
         return [
+          { title: 'States', cols: 1, rows: 3 },
           { title: 'Avg', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
           { title: 'Records Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD  },
           { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD  },
           { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP  },
-          { title: 'Distribution', cols: 3, rows: 2 },
-          { title: 'Seasonal Trends', cols: 3, rows: 1,componentType: ComponentType.SeasonalTrends },
-          { title: 'Quality', cols: 3, rows: 1 },
+          { title: 'Distribution', cols: 3, rows: 1 },
+          { title: 'Seasonal Trends', cols: 3, rows: 1 },
         ];
       }
 
       return [
+        { title: 'States', cols: 1, rows: 5 },
         { title: 'Avg', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
         { title: 'Records Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
         { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
         { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP },
-        { title: 'Distribution', cols: 1, rows: 2 },
-        { title: 'Seasonal Trends', cols: 2, rows: 1 ,componentType: ComponentType.SeasonalTrends },
-        { title: 'Quality', cols: 2, rows: 1 },
+        { title: 'Distribution', cols: 3, rows: 1 },
+        { title: 'Seasonal Trends', cols: 3, rows: 1 },
       ];
     })
   );

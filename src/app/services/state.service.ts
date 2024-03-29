@@ -15,7 +15,7 @@ export interface SelectedElements {
 export class StateService {
 
   private selectedElementsSubject: BehaviorSubject<SelectedElements> = new BehaviorSubject<SelectedElements>({
-    element: '',
+    element: 'AQI',
     year: 0,
     name: '',
     month: 0,
@@ -43,6 +43,9 @@ export class StateService {
   }
 
   setSelectedName(name: string): void {
+    if (this.selectedElementsSubject.value.name == name)
+    this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, name: '' });
+    else
     this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, name });
   }
 

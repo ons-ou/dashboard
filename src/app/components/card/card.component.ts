@@ -23,6 +23,6 @@ export class CardComponent {
   title: string = ""
 
   @Input()
-  value: string = ""
+  value: number = 0
 
 }

@@ -21,9 +21,12 @@ export class SqlService implements DataServiceInterface{
   numberOfRecords(element: string, year: number, name: string, isState: boolean, month: number): number {
     throw new Error('Method not implemented.');
   }
+  
   averageValueByCounty(element: string, year: number, month: number): { name: string; value: number; }[] {
+    // Name needs to be countyName, stateName
     throw new Error('Method not implemented.');
   }
+  
   avgValueBySeason(element: string, year: number, name: string, isState: boolean): { season: string; value: number; }[] {
     throw new Error('Method not implemented.');
   }

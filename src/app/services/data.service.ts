@@ -11,7 +11,8 @@ export class ToDoDataService {
   averageValue$: Observable<number> = of(0);
   numberOfRecords$: Observable<number> = of(0);
   avgValueBySeason$: Observable<{ season: string, value: number }[]> = of([]);
-  averageValuesByName$: Observable<{ name: string, value: number }[]> = of([]);
+  averageValuesByState$: Observable<{ name: string, value: number }[]> = of([]);
+  averageValuesByCounty$: Observable<{ name: string, value: number }[]> = of([]);
   numberOfObservations$: Observable<number> = of(0);
 
   stateService = inject(StateService)
@@ -31,10 +32,16 @@ export class ToDoDataService {
       })
     );
 
-    this.averageValuesByName$ = changedElement$.pipe(
+    this.averageValuesByState$ = changedElement$.pipe(
       switchMap(() => selectedElements$),
-      map(elements => this.sqlService.averageValueByName(elements.element, elements.year, elements.month, elements.isState))
+      map(elements => this.sqlService.averageValueByState(elements.element, elements.year, elements.month))
     )
+
+    this.averageValuesByCounty$ = changedElement$.pipe(
+      switchMap(() => selectedElements$),
+      map(elements => this.sqlService.averageValueByCounty(elements.element, elements.year, elements.month))
+    )
+
 
     this.averageValue$ = selectedElements$.pipe(
       switchMap(() => selectedElements$),
@@ -71,23 +78,16 @@ export class DataService {
     { season: 'Fall', value: 85 },
     { season: 'Winter', value: 75 }
   ]);
-  averageValuesByName$: Observable<{ name: string, value: number }[]> = this.stateService.selectedElements$.pipe(
-    switchMap(elements => {
-      if (elements.isState) {
-        return of([
+  averageValuesByState$: Observable<{ name: string, value: number }[]> = of([
           { name: 'California', value: 75 },
           { name: 'Texas', value: 80 },
           { name: 'New York', value: 85 }
         ]);
-      } else {
-        return of([
-          { name: "Lawrence", value: 70 },
-          { name: "Aurora", value: 75 },
-          { name: 'Cook', value: 80 }
+
+  averageValuesByCounty$: Observable<{ name: string, value: number }[]> =  of([
+          { name: "Lawrence, Indiana", value: 70 },
+          { name: "Lapeer, Michigan", value: 75 },
         ]);
-      }
-    })
-  );
   
   numberOfObservations$: Observable<number> = of(1000);
 

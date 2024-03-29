@@ -1,5 +1,4 @@
-<div *ngIf="svg$ | async as svg">
-  <div id="map" #map [innerHTML]="svg"></div>
+<div *ngIf="svg$ | async as svg" class="center-content">
+  <div #map [innerHTML]="svg"></div>
+  <div class="mat-card-header"> Distribution</div>
 </div>
-
-
