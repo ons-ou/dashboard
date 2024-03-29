@@ -3,12 +3,9 @@ import {
   Component,
   ElementRef,
   Input,
-  Renderer2,
-  SimpleChanges,
   ViewChild,
   inject,
 } from '@angular/core';
-import { MapsModule } from '@syncfusion/ej2-angular-maps';
 import { Markish, centroid, dot, geo, plot, tip } from '@observablehq/plot';
 import { Observable, combineLatest, map } from 'rxjs';
 import { feature } from 'topojson';
@@ -16,7 +13,6 @@ import { Feature, Point, GeoJsonProperties } from 'geojson';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AqiDataService } from '../../services/aqi-data.service';
-import * as d3 from 'd3';
 
 @Component({
   selector: 'app-map',
