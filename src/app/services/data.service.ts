@@ -83,15 +83,10 @@ export class DataService {
           { name: 'Texas', value: 80 },
           { name: 'New York', value: 85 }
         ]);
-
   averageValuesByCounty$: Observable<{ name: string, value: number }[]> =  of([
           { name: "Lawrence, Indiana", value: 70 },
           { name: "Lapeer, Michigan", value: 75 },
         ]);
-  
   numberOfObservations$: Observable<number> = of(1000);
-
-  constructor(private stateService: StateService) {
-  }
 
 }

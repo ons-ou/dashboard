@@ -51,34 +51,29 @@ export class DashboardComponent {
   observationSum$ = this.service.numberOfObservations$;
   recordsSum = this.service.numberOfRecords$;
 
-  showCounties: boolean = false
-
-  ngOnChanges(changes: SimpleChange){
-    console.log(changes)
-  }
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
         return [
-          { title: 'States', cols: 1, rows: 3 },
+          { title: 'States', cols: 1, rows: 4 },
           { title: 'Avg', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
           { title: 'Records Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD  },
           { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD  },
           { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP  },
-          { title: 'Distribution', cols: 3, rows: 1 },
-          { title: 'Seasonal Trends', cols: 3, rows: 1 },
+          { title: 'Distribution', cols: 1, rows: 1 },
+          { title: 'Seasonal Trends', cols: 2, rows: 1 },
         ];
       }
 
       return [
-        { title: 'States', cols: 1, rows: 5 },
+        { title: 'States', cols: 1, rows: 4 },
         { title: 'Avg', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
         { title: 'Records Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
         { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
         { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP },
-        { title: 'Distribution', cols: 3, rows: 1 },
-        { title: 'Seasonal Trends', cols: 3, rows: 1 },
+        { title: 'Distribution', cols: 1, rows: 1 },
+          { title: 'Seasonal Trends', cols: 2, rows: 1 },
       ];
     })
   );
