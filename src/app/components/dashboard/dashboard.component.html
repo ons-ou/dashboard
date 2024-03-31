@@ -2,6 +2,7 @@
   <div class="grid-container">
     <h1 class="mat-h1 title">Dashboard</h1>
     <app-filters></app-filters>
+    <app-date-slider></app-date-slider>
     <mat-grid-list cols="4" rowHeight="400px">
       @for (card of cards | async; track card) {
         <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">

@@ -18,6 +18,7 @@ import { SeasonalTrendsComponent } from '../seasonal-trends/seasonal-trends.comp
 import { FiltersComponent } from '../filters/filters.component';
 import { DataService } from '../../services/data.service';
 import { NamesListComponent } from '../names-list/names-list.component';
+import { DateSliderComponent } from '../date-slider/date-slider.component';
 
 @Component({
   selector: 'app',
@@ -39,7 +40,8 @@ import { NamesListComponent } from '../names-list/names-list.component';
     CardComponent,
     MapComponent,
     FiltersComponent,
-    SeasonalTrendsComponent
+    SeasonalTrendsComponent,
+    DateSliderComponent
   ],
 })
 export class DashboardComponent {

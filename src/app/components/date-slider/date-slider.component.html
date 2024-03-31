@@ -1,0 +1,30 @@
+<div *ngIf="selectedDate$ | async as selectedDate">
+  <div style="display: flex; align-items: center">
+    <button mat-icon-button (click)="moveToPreviousMonth()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <mat-slider
+      [min]="startDate.getTime()"
+      [max]="endDate.getTime()"
+      [step]="getMonthStep()"
+      name="date"
+      thumbLabel
+      style="width: 100%"
+      ngDefaultControl
+    >
+      <input (input)="onDateChange($event)" matSliderThumb />
+    </mat-slider>
+
+    <button mat-icon-button (click)="moveToNextMonth()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="onPlayPauseButtonClick()">
+      <mat-icon>{{ (play$ | async) ? 'pause' : 'play_arrow' }}</mat-icon>
+    </button>
+    
+  </div>
+  <p style="margin-left: 100px;">Date: {{ selectedDate | date: 'MMMM yyyy' }}</p>
+</div>
+

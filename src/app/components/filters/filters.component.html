@@ -11,7 +11,7 @@
       <mat-label>Select Element</mat-label>
       <mat-select
         [(value)]="selectedElement"
-        (change)="updateSelectedElements()"
+        (selectionChange)="updateSelectedElements('element')"
       >
         <mat-option *ngFor="let element of elements" [value]="element">{{
           element
@@ -21,7 +21,7 @@
 
     <mat-form-field>
       <mat-label>Select Year</mat-label>
-      <mat-select [(value)]="selectedYear" (change)="updateSelectedElements()">
+      <mat-select [(value)]="selectedYear" (selectionChange)="updateSelectedElements('year')">
         <mat-option *ngFor="let year of years" [value]="year">{{
           year
         }}</mat-option>
@@ -30,7 +30,7 @@
 
     <mat-form-field>
       <mat-label>Select Month</mat-label>
-      <mat-select [(value)]="selectedMonth" (change)="updateSelectedElements()">
+      <mat-select [(value)]="selectedMonth" (selectionChange)="updateSelectedElements('month')">
         <mat-option *ngFor="let month of months" [value]="month">{{
           month == null ? '' : month
         }}</mat-option>
@@ -41,7 +41,7 @@
     <mat-radio-group
       style="padding-left: 150px;"
       [(ngModel)]="selectedDistribution"
-      (change)="updateSelectedElements()"
+      (change)="updateSelectedElements('distribution')"
     >
       <mat-radio-button value="state">Distribution by State</mat-radio-button>
       <mat-radio-button value="county">Distribution by County</mat-radio-button>

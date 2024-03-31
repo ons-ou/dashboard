@@ -1,39 +1,49 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { BarController, BarElement, CategoryScale, Chart, LineController, LinearScale } from 'chart.js';
 import { Tooltip } from 'chart.js';
 import { DataService } from '../../services/data.service';
+import { Observable, Subscription, tap } from 'rxjs';
+import { AsyncPipe, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-seasonal-trends',
   templateUrl: './seasonal-trends.component.html',
   styleUrls: ['./seasonal-trends.component.css'],
+  imports: [AsyncPipe, CommonModule],
   standalone: true
 })
 export class SeasonalTrendsComponent {
 
+  private chart: Chart | null = null;
   private service = inject(DataService);
 
-  data$ = this.service.avgValueBySeason$;
+  data$!: Observable<{ season: string, value: number }[]>
 
   constructor() {
     Chart.register(BarController, BarElement, LinearScale, LineController, CategoryScale, Tooltip);
+
   }
 
-  ngOnInit(): void {
-    this.data$.subscribe(data => {
-      this.createChart(data);
-    });
+  ngOnInit(){
+    this.data$ = this.service.avgValueBySeason$.pipe(
+      tap((data)=> {
+        if (this.chart) {
+          this.chart.destroy();
+        }
+        this.createChart(data);
+      })
+    )
   }
 
   createChart(data: { season: string, value: number }[]): void {
     const labels = data.map(d => d.season);
     const values = data.map(d => d.value);
-  
+
     const canvas = document.getElementById('chart') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas?.getContext('2d');
     if (!ctx) return;
-  
-    new Chart(ctx, {
+
+    this.chart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: labels,
@@ -89,6 +99,5 @@ export class SeasonalTrendsComponent {
         }
       }
     });
-  }  
-  
+  }
 }

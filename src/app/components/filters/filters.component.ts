@@ -48,14 +48,17 @@ export class FiltersComponent {
   elements: string[] = ['AQI', 'CO', 'SO2'];
   years: any[] = this.getYearRange();
 
-  updateSelectedElements(): void {
-    this.stateService.setSelectedElement(this.selectedElement);
-    this.stateService.setSelectedYear(this.selectedYear);
-    this.stateService.setSelectedMonth(
-      this.months.indexOf(this.selectedMonth) + 1
-    );
-    this.stateService.setIsState(this.selectedDistribution === 'state');
-  }
+  updateSelectedElements(updatedElement: string): void {
+    if (updatedElement === 'element') {
+      this.stateService.setSelectedElement(this.selectedElement);
+    } else if (updatedElement === 'year') {
+      this.stateService.setSelectedYear(this.selectedYear);
+    } else if (updatedElement === 'month') {
+      this.stateService.setSelectedMonth(this.months.indexOf(this.selectedMonth) + 1);
+    } else if (updatedElement === 'distribution') {
+      this.stateService.setIsState(this.selectedDistribution === 'state');
+    }
+  }  
 
   getYearRange(): any[] {
     const currentYear = new Date().getFullYear();

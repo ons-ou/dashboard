@@ -70,23 +70,87 @@ export class ToDoDataService {
 })
 export class DataService {
 
-  averageValue$: Observable<number> = of(100);
-  numberOfRecords$: Observable<number> = of(50);
-  avgValueBySeason$: Observable<{ season: string, value: number }[]> = of([
-    { season: 'Spring', value: 80 },
-    { season: 'Summer', value: 90 },
-    { season: 'Fall', value: 85 },
-    { season: 'Winter', value: 75 }
-  ]);
-  averageValuesByState$: Observable<{ name: string, value: number }[]> = of([
-          { name: 'California', value: 75 },
-          { name: 'Texas', value: 80 },
-          { name: 'New York', value: 85 }
-        ]);
-  averageValuesByCounty$: Observable<{ name: string, value: number }[]> =  of([
-          { name: "Lawrence, Indiana", value: 70 },
-          { name: "Lapeer, Michigan", value: 75 },
-        ]);
-  numberOfObservations$: Observable<number> = of(1000);
+  
+  averageValue$: Observable<number> = of(0);
+  numberOfRecords$: Observable<number> = of(0);
+  avgValueBySeason$: Observable<{ season: string, value: number }[]> = of([]);
+  averageValuesByState$: Observable<{ name: string, value: number }[]> = of([]);
+  averageValuesByCounty$: Observable<{ name: string, value: number }[]> = of([]);
+  numberOfObservations$: Observable<number> = of(0);
 
+  private randomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  private randomItem<T>(array: T[]): T {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+
+  constructor(private stateService: StateService, private sqlService: SqlService) {
+    let selectedElements$ = this.stateService.selectedElements$;
+
+    let changedElement$ = selectedElements$.pipe(
+      distinctUntilChanged((prev, curr) => {
+        return (
+          prev.element === curr.element &&
+          prev.year === curr.year &&
+          prev.month === curr.month &&
+          prev.isState === curr.isState
+        );
+      })
+    );
+
+    this.averageValuesByState$ = changedElement$.pipe(
+      switchMap(() => selectedElements$),
+      map(elements => {
+        return [
+          { name: 'California', value: this.randomInt(70, 90) },
+          { name: 'Texas', value: this.randomInt(75, 95) },
+          { name: 'New York', value: this.randomInt(80, 100) }
+        ]
+      })
+    );
+
+    this.averageValuesByCounty$ = changedElement$.pipe(
+      switchMap(() => selectedElements$),
+      map(elements => {
+        return [
+          { name: 'Lawrence, Indiana', value: this.randomInt(65, 85) },
+          { name: 'Lapeer, Michigan', value: this.randomInt(70, 90) }
+        ]
+      })
+    );
+
+    this.averageValue$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map(elements => {
+        return this.randomInt(50, 150);
+      })
+    );
+
+    this.numberOfRecords$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map(elements => {
+        return this.randomInt(25, 75);
+      })
+    );
+
+    this.avgValueBySeason$ = selectedElements$.pipe(
+      map((elements) => {
+        return [
+          { season: 'Spring', value: this.randomInt(70, 90) },
+          { season: 'Summer', value: this.randomInt(80, 100) },
+          { season: 'Fall', value: this.randomInt(75, 95) },
+          { season: 'Winter', value: this.randomInt(65, 85) }
+        ];
+      })
+    );
+
+    this.numberOfObservations$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map(elements => {
+        return this.randomInt(800, 1200);
+      })
+    );
+  }
 }
