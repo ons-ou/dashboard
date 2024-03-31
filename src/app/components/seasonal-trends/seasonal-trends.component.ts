@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
 import { BarController, BarElement, CategoryScale, Chart, LineController, LinearScale } from 'chart.js';
 import { Tooltip } from 'chart.js';
 import { DataService } from '../../services/data.service';
@@ -10,7 +10,9 @@ import { AsyncPipe, CommonModule } from '@angular/common';
   templateUrl: './seasonal-trends.component.html',
   styleUrls: ['./seasonal-trends.component.css'],
   imports: [AsyncPipe, CommonModule],
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class SeasonalTrendsComponent {
 

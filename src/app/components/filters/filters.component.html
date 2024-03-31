@@ -1,50 +1,15 @@
-<mat-accordion class="rounded">
-  <mat-expansion-panel
-    (opened)="panelOpenState = true"
-    (closed)="panelOpenState = false"
-    class="center-panel"
-  >
-    <mat-expansion-panel-header>
-      <mat-panel-title> Filters </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-form-field>
-      <mat-label>Select Element</mat-label>
-      <mat-select
-        [(value)]="selectedElement"
-        (selectionChange)="updateSelectedElements('element')"
-      >
-        <mat-option *ngFor="let element of elements" [value]="element">{{
-          element
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+<mat-accordion class="rounded" style="display: flex; flex-direction: column; align-items: center;">
+  <mat-form-field>
+    <mat-label>Select Element</mat-label>
+    <mat-select [(value)]="selectedElement" (selectionChange)="updateSelectedElements('element')">
+      <mat-option *ngFor="let element of elements" [value]="element">{{ element }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Select Year</mat-label>
-      <mat-select [(value)]="selectedYear" (selectionChange)="updateSelectedElements('year')">
-        <mat-option *ngFor="let year of years" [value]="year">{{
-          year
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+  <app-date-select></app-date-select>
 
-    <mat-form-field>
-      <mat-label>Select Month</mat-label>
-      <mat-select [(value)]="selectedMonth" (selectionChange)="updateSelectedElements('month')">
-        <mat-option *ngFor="let month of months" [value]="month">{{
-          month == null ? '' : month
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <br/>
-    <mat-radio-group
-      style="padding-left: 150px;"
-      [(ngModel)]="selectedDistribution"
-      (change)="updateSelectedElements('distribution')"
-    >
-      <mat-radio-button value="state">Distribution by State</mat-radio-button>
-      <mat-radio-button value="county">Distribution by County</mat-radio-button>
-    </mat-radio-group>
-  </mat-expansion-panel>
+  <mat-radio-group [(ngModel)]="selectedDistribution" (change)="updateSelectedElements('distribution')">
+    <mat-radio-button value="state">Distribution by State</mat-radio-button>
+    <mat-radio-button value="county">Distribution by County</mat-radio-button>
+  </mat-radio-group>
 </mat-accordion>

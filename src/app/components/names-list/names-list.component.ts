@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { StateService } from '../../services/state.service';
@@ -15,7 +15,8 @@ import { elements } from 'chart.js';
     MatListModule,
   ],
   templateUrl: './names-list.component.html',
-  styleUrl: './names-list.component.css'
+  styleUrl: './names-list.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NamesListComponent {
 

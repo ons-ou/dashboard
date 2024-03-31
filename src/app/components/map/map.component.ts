@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
 import { Markish, centroid, geo, plot } from '@observablehq/plot';
 import {
   Observable,
@@ -21,6 +21,7 @@ import { SelectedElements, StateService } from '../../services/state.service';
   styleUrls: ['./map.component.css'],
   imports: [AsyncPipe, CommonModule],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapComponent {
   private http = inject(HttpClient);

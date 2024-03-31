@@ -1,0 +1,40 @@
+<div style="display: flex; align-items: center">
+  <button
+    mat-icon-button
+    (click)="goToPreviousMonth()"
+    [disabled]="isFirstMonth"
+  >
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+  <form [formGroup]="dateForm">
+  <mat-form-field>
+    <mat-label>Select Month</mat-label>
+    <mat-select
+      formControlName="selectedMonth"
+      (selectionChange)="updateSelectedElements('month')"
+    >
+      <mat-option *ngFor="let month of months" [value]="month">{{
+        month
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <span style="margin-left: 8px">&nbsp;-&nbsp;</span>
+  <mat-form-field>
+    <mat-label>Select Year</mat-label>
+    <mat-select
+      formControlName="selectedYear"
+      (selectionChange)="updateSelectedElements('year')"
+    >
+      <mat-option *ngFor="let year of years" [value]="year">{{
+        year
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+  <button mat-icon-button (click)="goToNextMonth()" [disabled]="isLastMonth">
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
+  <button mat-icon-button (click)="play()">
+    <mat-icon>{{ (play$ | async) ? "pause" : "play_arrow" }}</mat-icon>
+  </button>
+</div>
