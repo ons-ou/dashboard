@@ -14,7 +14,8 @@ export class ToDoDataService {
   averageValuesByState$: Observable<{ name: string, value: number }[]> = of([]);
   averageValuesByCounty$: Observable<{ name: string, value: number }[]> = of([]);
   numberOfObservations$: Observable<number> = of(0);
-
+  avgerageValuesByHour$: Observable<{ time: string, value: number }[]> = of([]);
+  averageValuesByDay$:Observable<{ time: string, value: number }[]> = of([]);
   stateService = inject(StateService)
   sqlService = inject(SqlService)
 
@@ -61,6 +62,14 @@ export class ToDoDataService {
       switchMap(() => selectedElements$),
       map(elements => this.sqlService.numberOfObservations(elements.element, elements.year, elements.name, elements.isState, elements.month))
     );
+    this.avgerageValuesByHour$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map(elements => this.sqlService.averageValueByHour(elements.element, elements.year, elements.name, elements.isState, elements.month))
+    );
+    this.averageValuesByDay$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map(elements => this.sqlService.averageValueByDay(elements.element, elements.year, elements.name, elements.isState, elements.month))
+    );
   }
 }
 
@@ -86,6 +95,38 @@ export class DataService {
   averageValuesByCounty$: Observable<{ name: string, value: number }[]> =  of([
           { name: "Lawrence, Indiana", value: 70 },
           { name: "Lapeer, Michigan", value: 75 },
+        ]);
+  aqiByHourForStates$: Observable<{ time: string, value: number }[]> = of([
+          
+         
+              { time: '8:00 AM', value: 30 },
+              { time: '9:00 AM', value: 35 },
+              { time: '10:00 AM', value: 40 },
+              { time: '11:00 AM', value: 45 },
+              { time: '12:00 PM', value: 50 },
+              { time: '1:00 PM', value: 55 },
+              { time: '2:00 PM', value: 60 },
+              { time: '3:00 PM', value: 65 },
+              { time: '4:00 PM', value: 70 },
+              { time: '5:00 PM', value: 75 },
+              { time: '6:00 PM', value: 80 },
+              { time: '7:00 PM', value: 85 },
+              { time: '8:00 PM', value: 90 },
+              { time: '9:00 PM', value: 85 },
+              { time: '10:00 PM', value: 80 },
+              { time: '11:00 PM', value: 75 },
+              { time: '12:00 AM', value: 70 }
+            ]
+        
+        );
+aqiByDayForStates$: Observable<{ time: string, value: number }[]> = of([
+          { time: 'Monday', value: 75 },
+          { time: 'Tuesday', value: 80 },
+          { time: 'Wednesday', value: 85 },
+          { time: 'Thursday', value: 90 },
+          { time: 'Friday', value: 85 },
+          { time: 'Saturday', value: 80 },
+          { time: 'Sunday', value: 75 }
         ]);
   numberOfObservations$: Observable<number> = of(1000);
 

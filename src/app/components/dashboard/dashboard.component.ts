@@ -15,6 +15,7 @@ import { ComponentType } from '../../enums/component-type.enum';
 import { CardComponent } from '../card/card.component';
 import { MapComponent } from '../map/map.component';
 import { SeasonalTrendsComponent } from '../seasonal-trends/seasonal-trends.component';
+import { TemporalTrendsComponent } from '../temporal-trends/temporal-trends.component';
 import { FiltersComponent } from '../filters/filters.component';
 import { DataService } from '../../services/data.service';
 import { NamesListComponent } from '../names-list/names-list.component';
@@ -39,18 +40,20 @@ import { NamesListComponent } from '../names-list/names-list.component';
     CardComponent,
     MapComponent,
     FiltersComponent,
-    SeasonalTrendsComponent
+    SeasonalTrendsComponent,
+    TemporalTrendsComponent
   ],
 })
 export class DashboardComponent {
 [x: string]: any;
   private breakpointObserver = inject(BreakpointObserver);
   service = inject(DataService);
-
+  times=["day","hour"];
   avgaqi$ = this.service.averageValue$;
   observationSum$ = this.service.numberOfObservations$;
   recordsSum = this.service.numberOfRecords$;
-
+  avgaqiByHour$=this.service.aqiByHourForStates$;
+  avgaqiByDay$=this.service.aqiByDayForStates$;
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -63,6 +66,8 @@ export class DashboardComponent {
           { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP  },
           { title: 'Distribution', cols: 1, rows: 1 },
           { title: 'Seasonal Trends', cols: 2, rows: 1 },
+          { title: 'hour', cols: 2, rows: 1 },
+          { title: 'day', cols: 2, rows: 1 },
         ];
       }
 
@@ -74,6 +79,8 @@ export class DashboardComponent {
         { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP },
         { title: 'Distribution', cols: 1, rows: 1 },
           { title: 'Seasonal Trends', cols: 2, rows: 1 },
+          { title: 'hour', cols: 2, rows: 1 },
+          { title: 'day', cols: 2, rows: 1 },
       ];
     })
   );

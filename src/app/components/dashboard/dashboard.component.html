@@ -1,7 +1,9 @@
 <div class="grid-container">
   <div class="grid-container">
     <h1 class="mat-h1 title">Dashboard</h1>
+
     <app-filters></app-filters>
+    
     <mat-grid-list cols="4" rowHeight="400px">
       @for (card of cards | async; track card) {
         <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
@@ -27,14 +29,26 @@
                   <ng-template [ngSwitchCase]="'Seasonal Trends'">
                     <app-seasonal-trends></app-seasonal-trends>
                   </ng-template>
-                  <ng-template ngSwitchDefault>
-                      Card content here
+                  <ng-template [ngSwitchCase]="'hour'">
+                    <app-temporal-trends [airQualityData$]="avgaqiByHour$" [time]="times[1]"></app-temporal-trends>
+
                   </ng-template>
+                  <ng-template [ngSwitchCase]="'day'">
+                    <app-temporal-trends [airQualityData$]="avgaqiByDay$" [time]="times[0]"></app-temporal-trends>
+                  </ng-template>
+               
+                  
+                  
+               
+                
+                 
                 </ng-container>
+                
               </div>
             </mat-card-content>
           </mat-card>
         </mat-grid-tile>
       }
     </mat-grid-list>
+    <app-temporal-trends [airQualityData$]="avgaqiByDay$" [time]="times[0]"></app-temporal-trends>
 </div>
