@@ -1,0 +1,38 @@
+.grid-container {
+    padding: 20px;
+    background: linear-gradient(180deg, #f6fcff 0%, #d0e5fd);
+  }
+  
+  .title {
+    place-self: center;
+    text-align: center;
+    font-size: 2rem;
+    line-height: 1.5rem;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    margin-bottom: 1%;
+    color: #014357;
+    font-weight: 900;
+  }
+  
+  .dashboard-card {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+  }
+  
+  .dashboard-card-content {
+    height: 80%;
+    width: 28%;
+    text-align: center;
+    margin: auto;
+  }
+  
+  .dashboard-small-card-content {
+    height: 80%;
+    width: 70%;
+    text-align: center;
+    margin: auto;
+  }

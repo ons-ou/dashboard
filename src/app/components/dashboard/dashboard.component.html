@@ -1,0 +1,143 @@
+<div class="grid-container" *ngIf="element$ | async as element">
+  <div class="grid-container">
+    <h1 class="mat-h1 title">Dashboard</h1>
+
+    <app-filters></app-filters>
+
+    <mat-grid-list cols="4" rowHeight="400px">
+      @for (card of cards | async; track card) {
+      <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
+        <mat-card class="dashboard-card">
+          <mat-card-content
+            [class]="
+              card.cols == 4
+                ? 'dashboard-card-content'
+                : 'dashboard-small-card-content'
+            "
+          >
+            <ng-container [ngSwitch]="card.title">
+              <ng-template [ngSwitchCase]="'States'">
+                <app-names-list></app-names-list>
+              </ng-template>
+
+              <ng-template
+                [ngSwitchCase]="'Avg'"
+                *ngIf="avgaqi$ | async as avg"
+              >
+                <app-card
+                  [color]="'cornflowerblue'"
+                  [icon]="'air'"
+                  [title]="'Average value'"
+                  [value]="avg"
+                ></app-card>
+              </ng-template>
+              <ng-template
+                [ngSwitchCase]="'Records Count'"
+                *ngIf="recordsSum | async as rec"
+              >
+                <app-card
+                  [color]="'dimgrey'"
+                  [icon]="'notes'"
+                  [title]="'Number of Records'"
+                  [value]="rec"
+                ></app-card>
+              </ng-template>
+              <ng-template
+                [ngSwitchCase]="'Obs Count'"
+                *ngIf="observationSum$ | async as sum"
+              >
+                <app-card
+                  [color]="'lightseagreen'"
+                  [icon]="'search'"
+                  [title]="'Number of Observations'"
+                  [value]="sum"
+                ></app-card>
+              </ng-template>
+              <ng-template [ngSwitchCase]="'Map'">
+                <app-map></app-map>
+              </ng-template>
+              <ng-template
+                [ngSwitchCase]="'Categories'"
+                *ngIf="aqiCategories$ | async as categories"
+              >
+                <app-chart
+                  [canvasId]="'categories'"
+                  [labels]="getValues(categories, 'name')"
+                  [values]="getValues(categories, 'value')"
+                  [colors]="genenrateColorsByLabel(getValues(categories, 'name'), element)"
+                  [title]="'Distribution of AQI Categories in the USA'"
+                  [chartType]="'doughnut'"
+                ></app-chart>
+              </ng-template>
+
+              <ng-template
+                [ngSwitchCase]="'Seasonal Trends'"
+                *ngIf="avgaqiBySeason$ | async as seasons"
+              >
+                <app-chart
+                  [canvasId]="'seasons'"
+                  [chartType]="'bar'"
+                  [colors]="
+                    generateColors(getValues(seasons, 'value'), element)
+                  "
+                  [labels]="getValues(seasons, 'season')"
+                  [values]="getValues(seasons, 'value')"
+                  [title]="'Average Values by Season'"
+                  [legendDisplay]="false"
+                  [axis]="{ x: 'Season', y: 'Average Value' }"
+                ></app-chart>
+              </ng-template>
+
+              <ng-template
+                [ngSwitchCase]="'hour'"
+                *ngIf="avgaqiByHour$ | async as hours"
+              >
+                <app-chart
+                  [canvasId]="'hour'"
+                  [chartType]="'bar'"
+                  [colors]="generateColors(getValues(hours, 'value'), element)"
+                  [labels]="getValues(hours, 'label')"
+                  [values]="getValues(hours, 'value')"
+                  [title]="'Max Value Count'"
+                  [legendDisplay]="false"
+                  [axis]="{ x: 'Hour', y: 'Count' }"
+                ></app-chart>
+              </ng-template>
+
+              <ng-template
+                [ngSwitchCase]="'day'"
+                *ngIf="avgaqiByDay$ | async as days"
+              >
+                <app-chart
+                  [canvasId]="'day'"
+                  [chartType]="'bar'"
+                  [colors]="generateColors(getValues(days, 'value'), element)"
+                  [labels]="getValues(days, 'label')"
+                  [values]="getValues(days, 'value')"
+                  [title]="'Average Value by Day'"
+                  [legendDisplay]="false"
+                  [axis]="{ x: 'Day', y: 'Average value' }"
+                ></app-chart>
+              </ng-template>
+
+              <ng-template
+                [ngSwitchCase]="'Elements'"
+                *ngIf="pollutionElements$ | async as elements"
+              >
+                <app-chart
+                  [canvasId]="'elements'"
+                  [chartType]="'pie'"
+                  [colors]="colors"
+                  [labels]="getValues(elements, 'name')"
+                  [values]="getValues(elements, 'value')"
+                  [title]="'Pollution Distribution'"
+                ></app-chart>
+              </ng-template>
+            </ng-container>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      }
+    </mat-grid-list>
+  </div>
+</div>

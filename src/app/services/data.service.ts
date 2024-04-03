@@ -4,19 +4,21 @@ import { StateService } from './state.service';
 import { SqlService } from './sql.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ToDoDataService {
-
   averageValue$: Observable<number> = of(0);
   numberOfRecords$: Observable<number> = of(0);
-  avgValueBySeason$: Observable<{ season: string, value: number }[]> = of([]);
-  averageValuesByState$: Observable<{ name: string, value: number }[]> = of([]);
-  averageValuesByCounty$: Observable<{ name: string, value: number }[]> = of([]);
+  avgValueBySeason$: Observable<{ season: string; value: number }[]> = of([]);
+  averageValuesByState$: Observable<{ name: string; value: number }[]> = of([]);
+  averageValuesByCounty$: Observable<{ name: string; value: number }[]> = of(
+    []
+  );
   numberOfObservations$: Observable<number> = of(0);
-
-  stateService = inject(StateService)
-  sqlService = inject(SqlService)
+  avgerageValuesByHour$: Observable<{ time: string; value: number }[]> = of([]);
+  averageValuesByDay$: Observable<{ time: string; value: number }[]> = of([]);
+  stateService = inject(StateService);
+  sqlService = inject(SqlService);
 
   constructor() {
     let selectedElements$ = this.stateService.selectedElements$;
@@ -34,59 +36,133 @@ export class ToDoDataService {
 
     this.averageValuesByState$ = changedElement$.pipe(
       switchMap(() => selectedElements$),
-      map(elements => this.sqlService.averageValueByState(elements.element, elements.year, elements.month))
-    )
+      map((elements) =>
+        this.sqlService.averageValueByState(
+          elements.element,
+          elements.year,
+          elements.month
+        )
+      )
+    );
 
     this.averageValuesByCounty$ = changedElement$.pipe(
       switchMap(() => selectedElements$),
-      map(elements => this.sqlService.averageValueByCounty(elements.element, elements.year, elements.month))
-    )
-
+      map((elements) =>
+        this.sqlService.averageValueByCounty(
+          elements.element,
+          elements.year,
+          elements.month
+        )
+      )
+    );
 
     this.averageValue$ = selectedElements$.pipe(
       switchMap(() => selectedElements$),
-      map(elements => this.sqlService.averageValue(elements.element, elements.year, elements.name, elements.isState, elements.month))
+      map((elements) =>
+        this.sqlService.averageValue(
+          elements.element,
+          elements.year,
+          elements.name,
+          elements.isState,
+          elements.month
+        )
+      )
     );
 
     this.numberOfRecords$ = selectedElements$.pipe(
       switchMap(() => selectedElements$),
-      map(elements => this.sqlService.numberOfRecords(elements.element, elements.year, elements.name, elements.isState, elements.month))
+      map((elements) =>
+        this.sqlService.numberOfRecords(
+          elements.element,
+          elements.year,
+          elements.name,
+          elements.isState,
+          elements.month
+        )
+      )
     );
 
     this.avgValueBySeason$ = selectedElements$.pipe(
-      map((elements) => this.sqlService.avgValueBySeason(elements.element, elements.year, elements.name, elements.isState))
+      map((elements) =>
+        this.sqlService.avgValueBySeason(
+          elements.element,
+          elements.year,
+          elements.name,
+          elements.isState
+        )
+      )
     );
 
     this.numberOfObservations$ = selectedElements$.pipe(
       switchMap(() => selectedElements$),
-      map(elements => this.sqlService.numberOfObservations(elements.element, elements.year, elements.name, elements.isState, elements.month))
+      map((elements) =>
+        this.sqlService.numberOfObservations(
+          elements.element,
+          elements.year,
+          elements.name,
+          elements.isState,
+          elements.month
+        )
+      )
+    );
+    this.avgerageValuesByHour$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map((elements) =>
+        this.sqlService.averageValueByHour(
+          elements.element,
+          elements.year,
+          elements.name,
+          elements.isState,
+          elements.month
+        )
+      )
+    );
+    this.averageValuesByDay$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map((elements) =>
+        this.sqlService.averageValueByDay(
+          elements.element,
+          elements.year,
+          elements.name,
+          elements.isState,
+          elements.month
+        )
+      )
     );
   }
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
-
-  
   averageValue$: Observable<number> = of(0);
   numberOfRecords$: Observable<number> = of(0);
-  avgValueBySeason$: Observable<{ season: string, value: number }[]> = of([]);
-  averageValuesByState$: Observable<{ name: string, value: number }[]> = of([]);
-  averageValuesByCounty$: Observable<{ name: string, value: number }[]> = of([]);
+  avgValueBySeason$: Observable<{ season: string; value: number }[]> = of([]);
+  averageValuesByState$: Observable<{ name: string; value: number }[]> = of([]);
+  averageValuesByCounty$: Observable<{ name: string; value: number }[]> = of(
+    []
+  );
   numberOfObservations$: Observable<number> = of(0);
+  avgValuesByDay$: Observable<{ label: string; value: number }[]>;
+  maxCountByHour$: Observable<{ label: string; value: number }[]>;
+
+  pollutionElements$: Observable<{ name: string; value: number }[]> = of([]);
+  categories$: Observable<{ name: string; value: number }[]> = of([
+    { name: 'Good', value: 30 },
+    { name: 'Bad', value: 20 },
+    { name: 'Average', value: 60 },
+  ]);
+  
 
   private randomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  private randomItem<T>(array: T[]): T {
-    return array[Math.floor(Math.random() * array.length)];
-  }
-
-  constructor(private stateService: StateService, private sqlService: SqlService) {
+  constructor(
+    private stateService: StateService,
+    private sqlService: SqlService
+  ) {
     let selectedElements$ = this.stateService.selectedElements$;
 
     let changedElement$ = selectedElements$.pipe(
@@ -100,55 +176,105 @@ export class DataService {
       })
     );
 
+    this.pollutionElements$ = selectedElements$.pipe(
+      map(() => [
+        { name: 'NO2', value: this.randomInt(50, 100) },
+        { name: 'SO2', value: this.randomInt(50, 100) },
+        { name: 'CO2', value: this.randomInt(50, 100) },
+        { name: 'PM10', value: this.randomInt(50, 100) },
+      ])
+    );
+
+    this.categories$ = selectedElements$.pipe(
+      map(() => [
+        { name: 'Good', value: this.randomInt(0, 200) },
+        { name: 'Moderate', value: this.randomInt(0, 200) },
+        { name: 'Unhealthy for Sensitive Groups', value: this.randomInt(0, 200) },
+        { name: 'Unhealthy', value: this.randomInt(0, 200) },
+        { name: 'Hazardous', value: this.randomInt(0, 200) },
+
+      ])
+    );
+    
+    this.avgValuesByDay$ = selectedElements$.pipe(
+      map(() => [
+        { label: 'Monday', value: this.randomInt(0, 200) },
+        { label: 'Tuesday', value: this.randomInt(0, 200) },
+        { label: 'Wednesday', value: this.randomInt(0, 200) },
+        { label: 'Thursday', value: this.randomInt(0, 200) },
+        { label: 'Friday', value: this.randomInt(0, 200) },
+        { label: 'Saturday', value: this.randomInt(0, 200) },
+        { label: 'Sunday', value: this.randomInt(0, 200) },
+      ])
+    );
+    
+    this.maxCountByHour$ = selectedElements$.pipe(
+      map(() => [
+        { label: '8:00 AM', value: this.randomInt(0, 200) },
+        { label: '9:00 AM', value: this.randomInt(0, 200) },
+        { label: '10:00 AM', value: this.randomInt(0, 200) },
+        { label: '11:00 AM', value: this.randomInt(0, 200) },
+        { label: '12:00 PM', value: this.randomInt(0, 200) },
+        { label: '1:00 PM', value: this.randomInt(0, 200) },
+        { label: '2:00 PM', value: this.randomInt(0, 200) },
+        { label: '3:00 PM', value: this.randomInt(0, 200) },
+        { label: '4:00 PM', value: this.randomInt(0, 200) },
+        { label: '5:00 PM', value: this.randomInt(0, 200) },
+        { label: '6:00 PM', value: this.randomInt(0, 200) },
+        { label: '7:00 PM', value: this.randomInt(0, 200) },
+        { label: '8:00 PM', value: this.randomInt(0, 200) },
+      ])
+    );
+    
     this.averageValuesByState$ = changedElement$.pipe(
       switchMap(() => selectedElements$),
-      map(elements => {
-        return [
-          { name: 'California', value: this.randomInt(70, 90) },
-          { name: 'Texas', value: this.randomInt(75, 95) },
-          { name: 'New York', value: this.randomInt(80, 100) }
-        ]
-      })
-    );
-
-    this.averageValuesByCounty$ = changedElement$.pipe(
-      switchMap(() => selectedElements$),
-      map(elements => {
-        return [
-          { name: 'Lawrence, Indiana', value: this.randomInt(65, 85) },
-          { name: 'Lapeer, Michigan', value: this.randomInt(70, 90) }
-        ]
-      })
-    );
-
-    this.averageValue$ = selectedElements$.pipe(
-      switchMap(() => selectedElements$),
-      map(elements => {
-        return this.randomInt(50, 150);
-      })
-    );
-
-    this.numberOfRecords$ = selectedElements$.pipe(
-      switchMap(() => selectedElements$),
-      map(elements => {
-        return this.randomInt(25, 75);
-      })
-    );
-
-    this.avgValueBySeason$ = selectedElements$.pipe(
       map((elements) => {
         return [
-          { season: 'Spring', value: this.randomInt(70, 90) },
-          { season: 'Summer', value: this.randomInt(80, 100) },
-          { season: 'Fall', value: this.randomInt(75, 95) },
-          { season: 'Winter', value: this.randomInt(65, 85) }
+          { name: 'California', value: this.randomInt(0, 200) },
+          { name: 'Texas', value: this.randomInt(0, 200) },
+          { name: 'New York', value: this.randomInt(0, 200) },
         ];
       })
     );
+    
+    this.averageValuesByCounty$ = changedElement$.pipe(
+      switchMap(() => selectedElements$),
+      map((elements) => {
+        return [
+          { name: 'Lawrence, Indiana', value: this.randomInt(0, 200) },
+          { name: 'Lapeer, Michigan', value: this.randomInt(0, 200) },
+        ];
+      })
+    );
+    
+    this.averageValue$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map((elements) => {
+        return this.randomInt(0, 200);
+      })
+    );
+    
+    this.numberOfRecords$ = selectedElements$.pipe(
+      switchMap(() => selectedElements$),
+      map((elements) => {
+        return this.randomInt(0, 200);
+      })
+    );
+    
+    this.avgValueBySeason$ = selectedElements$.pipe(
+      map((elements) => {
+        return [
+          { season: 'Spring', value: this.randomInt(0, 200) },
+          { season: 'Summer', value: this.randomInt(0, 200) },
+          { season: 'Fall', value: this.randomInt(0, 200) },
+          { season: 'Winter', value: this.randomInt(0, 200) },
+        ];
+      })
+    );    
 
     this.numberOfObservations$ = selectedElements$.pipe(
       switchMap(() => selectedElements$),
-      map(elements => {
+      map((elements) => {
         return this.randomInt(800, 1200);
       })
     );
