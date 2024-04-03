@@ -81,11 +81,11 @@ export class DataService {
 
   averageValue$: Observable<number> = of(100);
   numberOfRecords$: Observable<number> = of(50);
-  avgValueBySeason$: Observable<{ season: string, value: number }[]> = of([
-    { season: 'Spring', value: 80 },
-    { season: 'Summer', value: 90 },
-    { season: 'Fall', value: 85 },
-    { season: 'Winter', value: 75 }
+  avgValueBySeason$: Observable<{ label: string, value: number }[]> = of([
+    { label: 'Spring', value: 80 },
+    { label: 'Summer', value: 90 },
+    { label: 'Fall', value: 85 },
+    { label: 'Winter', value: 75 }
   ]);
   averageValuesByState$: Observable<{ name: string, value: number }[]> = of([
           { name: 'California', value: 75 },
@@ -96,38 +96,48 @@ export class DataService {
           { name: "Lawrence, Indiana", value: 70 },
           { name: "Lapeer, Michigan", value: 75 },
         ]);
-  aqiByHourForStates$: Observable<{ time: string, value: number }[]> = of([
-          
-         
-              { time: '8:00 AM', value: 30 },
-              { time: '9:00 AM', value: 35 },
-              { time: '10:00 AM', value: 40 },
-              { time: '11:00 AM', value: 45 },
-              { time: '12:00 PM', value: 50 },
-              { time: '1:00 PM', value: 55 },
-              { time: '2:00 PM', value: 60 },
-              { time: '3:00 PM', value: 65 },
-              { time: '4:00 PM', value: 70 },
-              { time: '5:00 PM', value: 75 },
-              { time: '6:00 PM', value: 80 },
-              { time: '7:00 PM', value: 85 },
-              { time: '8:00 PM', value: 90 },
-              { time: '9:00 PM', value: 85 },
-              { time: '10:00 PM', value: 80 },
-              { time: '11:00 PM', value: 75 },
-              { time: '12:00 AM', value: 70 }
+  aqiByHourForStates$: Observable<{ label: string, value: number }[]> = of([
+
+
+              { label: '8:00 AM', value: 30 },
+              { label: '9:00 AM', value: 35 },
+              { label: '10:00 AM', value: 40 },
+              { label: '11:00 AM', value: 45 },
+              { label: '12:00 PM', value: 50 },
+              { label: '1:00 PM', value: 55 },
+              { label: '2:00 PM', value: 60 },
+              { label: '3:00 PM', value: 65 },
+              { label: '4:00 PM', value: 70 },
+              { label: '5:00 PM', value: 75 },
+              { label: '6:00 PM', value: 80 },
+              { label: '7:00 PM', value: 85 },
+              { label: '8:00 PM', value: 90 },
+              { label: '9:00 PM', value: 85 },
+              { label: '10:00 PM', value: 80 },
+              { label: '11:00 PM', value: 75 },
+              { label: '12:00 AM', value: 70 }
             ]
-        
+
         );
-aqiByDayForStates$: Observable<{ time: string, value: number }[]> = of([
-          { time: 'Monday', value: 75 },
-          { time: 'Tuesday', value: 80 },
-          { time: 'Wednesday', value: 85 },
-          { time: 'Thursday', value: 90 },
-          { time: 'Friday', value: 85 },
-          { time: 'Saturday', value: 80 },
-          { time: 'Sunday', value: 75 }
+aqiByDayForStates$: Observable<{ label: string, value: number }[]> = of([
+          { label: 'Monday', value: 75 },
+          { label: 'Tuesday', value: 80 },
+          { label: 'Wednesday', value: 85 },
+          { label: 'Thursday', value: 90 },
+          { label: 'Friday', value: 85 },
+          { label: 'Saturday', value: 80 },
+          { label: 'Sunday', value: 75 }
         ]);
   numberOfObservations$: Observable<number> = of(1000);
-
+  pollutionElements$: Observable<{ name: string, value: number }[]> = of( [
+    { name: 'NO2', value: 30 },
+    { name: 'SO2', value: 20 },
+    { name: 'CO2', value: 40 },
+    { name: 'PM10', value: 50 }
+  ]);
+  aqiCategories$: Observable<{ name: string, value: number }[]> = of( [
+    { name: 'Good', value: 30 },
+    { name: 'Bad', value: 20 },
+    { name: 'Average', value: 60 }
+  ]);
 }

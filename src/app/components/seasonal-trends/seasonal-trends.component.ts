@@ -25,14 +25,14 @@ export class SeasonalTrendsComponent {
     });
   }
 
-  createChart(data: { season: string, value: number }[]): void {
-    const labels = data.map(d => d.season);
+  createChart(data: { label: string, value: number }[]): void {
+    const labels = data.map(d => d.label);
     const values = data.map(d => d.value);
-  
+
     const canvas = document.getElementById('chart') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-  
+
     new Chart(ctx, {
       type: 'bar',
       data: {
@@ -89,6 +89,6 @@ export class SeasonalTrendsComponent {
         }
       }
     });
-  }  
-  
+  }
+
 }

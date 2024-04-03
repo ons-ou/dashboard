@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './temporal-trends.component.css'
 })
 export class TemporalTrendsComponent {
-  @Input() airQualityData$: Observable<{ time: string; value: number; }[]> | undefined;
+  @Input() airQualityData$: Observable<{ label: string; value: number; }[]> | undefined;
   @Input() time:string | undefined;
   constructor() {
     Chart.register(BarController, BarElement, LinearScale, LineController, CategoryScale, Tooltip);
@@ -30,15 +30,15 @@ export class TemporalTrendsComponent {
     }
     return colors;
   };
-  
-  createChart(data: { time: string, value: number }[]): void {
-    const labels = data.map(d => d.time);
+
+  createChart(data: { label: string, value: number }[]): void {
+    const labels = data.map(d => d.label);
     const values = data.map(d => d.value);
     const backgroundColors = this.generateColors(data.length);
     const canvas = document.getElementById('airQualityChart') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-  
+
     new Chart(ctx, {
       type: 'bar',
       data: {
@@ -88,5 +88,5 @@ export class TemporalTrendsComponent {
         }
       }
     });
-  } 
+  }
 }

@@ -21,10 +21,8 @@ export class BarChartComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.chartData$) {
-      this.chartData$.pipe(
-        map((data: { label: string; value: number; }[]) => this.transformData(data))
-      ).subscribe(transformedData => {
-        this.createChart(transformedData);
+      this.chartData$.subscribe(data => {
+        this.createChart(data);
       });
     }
   }

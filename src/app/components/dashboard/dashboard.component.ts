@@ -19,6 +19,9 @@ import { TemporalTrendsComponent } from '../temporal-trends/temporal-trends.comp
 import { FiltersComponent } from '../filters/filters.component';
 import { DataService } from '../../services/data.service';
 import { NamesListComponent } from '../names-list/names-list.component';
+import { PieChartComponent } from '../pie-chart/pie-chart.component';
+import { BarChartComponent } from '../bar-chart/bar-chart.component';
+import { DoughnutChartComponent } from '../doughnut-chart/doughnut-chart.component';
 
 @Component({
   selector: 'app',
@@ -41,7 +44,10 @@ import { NamesListComponent } from '../names-list/names-list.component';
     MapComponent,
     FiltersComponent,
     SeasonalTrendsComponent,
-    TemporalTrendsComponent
+    TemporalTrendsComponent,
+    PieChartComponent,
+    BarChartComponent,
+    DoughnutChartComponent
   ],
 })
 export class DashboardComponent {
@@ -54,6 +60,9 @@ export class DashboardComponent {
   recordsSum = this.service.numberOfRecords$;
   avgaqiByHour$=this.service.aqiByHourForStates$;
   avgaqiByDay$=this.service.aqiByDayForStates$;
+  pollutionElements$=this.service.pollutionElements$;
+  avgaqiBySeason$=this.service.avgValueBySeason$;
+  aqiCategories$=this.service.aqiCategories$;
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -78,9 +87,9 @@ export class DashboardComponent {
         { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
         { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP },
         { title: 'Distribution', cols: 1, rows: 1 },
-          { title: 'Seasonal Trends', cols: 2, rows: 1 },
-          { title: 'hour', cols: 2, rows: 1 },
-          { title: 'day', cols: 2, rows: 1 },
+        { title: 'Seasonal Trends', cols: 2, rows: 1 },
+        { title: 'hour', cols: 2, rows: 1 },
+        { title: 'day', cols: 2, rows: 1 },
       ];
     })
   );
