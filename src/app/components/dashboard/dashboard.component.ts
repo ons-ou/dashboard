@@ -1,6 +1,7 @@
 import { Component, SimpleChange, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -10,20 +11,30 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-
+import * as USAMapData from '../../../assets/United States of America.json';
+import { MapsModule,MapsTooltip,MapsTooltipService,LegendService, Internalize } from '@syncfusion/ej2-angular-maps';
 import { CardComponent } from '../card/card.component';
 import { MapComponent } from '../map/map.component';
 import { FiltersComponent } from '../filters/filters.component';
 import { DataService } from '../../services/data.service';
 import { NamesListComponent } from '../names-list/names-list.component';
 import { ChartComponent } from '../chart/chart.component';
-import { StateService } from '../../services/state.service';
+import { SelectedElements, StateService } from '../../services/state.service';
 import {
   categoryColors,
   colorsList,
   getCategories,
 } from '../../utils/categories';
-
+import { Feature, Point, GeoJsonProperties } from 'geojson';
+import {
+  Observable,
+  combineLatest,
+  distinctUntilKeyChanged,
+  of,
+  switchMap,
+} from 'rxjs';
+import { feature } from 'topojson';
+import { InteractiveMapComponent } from '../interactive-map/interactive-map.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -45,16 +56,77 @@ import {
     MapComponent,
     FiltersComponent,
     ChartComponent,
-  ],
+    MapsModule,
+    InteractiveMapComponent
+    
+  ],providers:[MapsTooltipService,LegendService]
 })
 export class DashboardComponent {
   private breakpointObserver = inject(BreakpointObserver);
   service = inject(DataService);
-
+  data$!: Observable<Map<string, number>>;
+  counties$!: Observable<any>;
+  states$!: Observable<any>;
+  states!: any;
+  statemap$!: Observable<Map<string, Feature<Point, GeoJsonProperties>>>;
   stateService = inject(StateService);
+  private http = inject(HttpClient);
+ statesAQI!: any[]; 
+ 
+USAMapData: any= USAMapData;
+
+constructor(){
+  let us$ = this.http.get<any>('assets/counties-albers-10m.json');
+  this.counties$ = us$.pipe(
+    map((us: any) => feature(us, us.objects.counties))
+  );
+  this.service.averageValuesByState$.subscribe(statesAQI => {
+    console.log("data", statesAQI);
+this.statesAQI=statesAQI.map(function(item) {
+  return {
+      name: item["name"],
+      value: item["value"]
+  };
+});
+console.log("data", this.statesAQI);
+  });
+  let isStateChanged$ = this.stateService.selectedElements$.pipe(
+    distinctUntilKeyChanged('isState')
+  );
+
+  this.states$ = us$.pipe(map((us: any) => feature(us, us.objects.states)));
+this.states$.subscribe(states=>{
+this.states=states
+console.log(this.states)
+}
+  )
+  let data$ = isStateChanged$.pipe(
+    switchMap((selectedElements: SelectedElements) => {
+      if (selectedElements.isState) {
+        return combineLatest([this.service.averageValuesByState$, this.states$]);
+      } else {
+        return combineLatest([this.service.averageValuesByCounty$, this.counties$]);
+      }
+    }),
+    map(([data, countyData]) => {
+      const dataMap = new Map(data.map((obj: any) => [obj.name, obj.value]));
+  console.log("data",dataMap)
+      return new Map(
+        countyData.features.map((d: any) => {
+          let x = dataMap.get(d.properties.name);
+          if (x !== undefined) {
+            return [d.id, dataMap.get(d.properties.name)];
+          } else return [d.id, -1];
+        })
+      );
+    })
+  );
+  
+ 
+}
 
   element$ = this.stateService.selectedElements$.pipe(map((el) => el.element));
-
+  
   avgaqi$ = this.service.averageValue$;
   observationSum$ = this.service.numberOfObservations$;
   recordsSum = this.service.numberOfRecords$;
@@ -65,6 +137,9 @@ export class DashboardComponent {
   aqiCategories$ = this.service.categories$;
 
   colors = colorsList;
+
+
+// Add remaining states with random values to the array
 
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(

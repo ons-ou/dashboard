@@ -43,7 +43,9 @@ export class MapComponent {
     this.counties$ = us$.pipe(
       map((us: any) => feature(us, us.objects.counties))
     );
-
+this.counties$.subscribe(a=>{
+  console.log("counties",a)
+})
     let isStateChanged$ = this.stateService.selectedElements$.pipe(
       distinctUntilKeyChanged('isState')
     );
@@ -83,7 +85,7 @@ export class MapComponent {
       )
     );
   }
-
+  
   plot(counties: any, states: any, data: any, elements: any) {
     const el = elements.isState ? states : counties;
     const place = el.features.filter(

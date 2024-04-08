@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, distinctUntilChanged, map, of, switchMap } from 'rxjs';
+import { Observable, distinctUntilChanged, map, combineLatest, of, switchMap } from 'rxjs';
 import { StateService } from './state.service';
 import { SqlService } from './sql.service';
+import { feature } from 'topojson';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +20,14 @@ export class ToDoDataService {
   averageValuesByDay$: Observable<{ time: string; value: number }[]> = of([]);
   stateService = inject(StateService);
   sqlService = inject(SqlService);
+  states$: any;
+  counties$: any;
 
   constructor() {
+   
+
+   
+
     let selectedElements$ = this.stateService.selectedElements$;
 
     let changedElement$ = selectedElements$.pipe(
@@ -154,7 +161,7 @@ export class DataService {
     { name: 'Average', value: 60 },
   ]);
   
-
+  
   private randomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -243,6 +250,8 @@ export class DataService {
         return [
           { name: 'Lawrence, Indiana', value: this.randomInt(0, 200) },
           { name: 'Lapeer, Michigan', value: this.randomInt(0, 200) },
+          {name: 'Cortland County', value: this.randomInt(0, 200) },
+          {name: 'Hamilton County', value: this.randomInt(0, 200) }
         ];
       })
     );

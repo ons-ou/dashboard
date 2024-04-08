@@ -1,0 +1,4 @@
+{"type":"GeometryCollection", "geometries": [
+    {"type": "Polygon", "arcs": [[111, 112, 113, 114, 115, 116]], "id": "48471", "properties": {"name": "Walker, Texas"}},
+    {"type": "Polygon", "arcs": [[127, 128, 129, 130, 131, 132, 133]], "id": "48047", "properties": {"name": "Brooks, Texas"}}
+    ]}

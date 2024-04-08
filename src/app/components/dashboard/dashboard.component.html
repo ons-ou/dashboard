@@ -3,7 +3,7 @@
     <h1 class="mat-h1 title">Dashboard</h1>
 
     <app-filters></app-filters>
-
+    <app-interactive-map></app-interactive-map>
     <mat-grid-list cols="4" rowHeight="400px">
       @for (card of cards | async; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
