@@ -117,10 +117,10 @@ ngOnInit(){
                       border: { width: 0.6, color: 'black' },
                       colorValuePath: 'value',
                         colorMapping: [
-                        { from: 0, to: 50, color: [ "#FFF176"] },
+                        { from: 0, to: 50, color: [ "#FDD835"] },
                         { from: 51, to: 100, color: ["#F9A825"] },
-                        { from: 101, to: 150, color: ["#ff7768"] },
-                        { from: 151, to: 200, color: ["#B71C1C"] }
+                        { from: 101, to: 150, color: ["#FF8A65"] },
+                        { from: 151, to: 200, color: ["#BD421C"] }
                     ],
                  
                       fill: '#ffe4dc'
@@ -196,10 +196,10 @@ ngOnInit(){
             },
             colorValuePath: 'value',
             colorMapping: [
-              { from: 0, to: 50, color: [ "#FFF176"] },
+              { from: 0, to: 50, color: [ "#FDD835"] },
               { from: 51, to: 100, color: ["#F9A825"] },
-              { from: 101, to: 150, color: ["#ff7768"] },
-              { from: 151, to: 200, color: ["#B71C1C"] }
+              { from: 101, to: 150, color: ["#FF8A65"] },
+              { from: 151, to: 200, color: ["#BD421C"] }
           ],
        
             fill: '#ffe4dc'
@@ -273,10 +273,10 @@ ngOnInit(){
             border: { width: 0.6, color: 'black' },
             colorValuePath: 'value',
               colorMapping: [
-              { from: 0, to: 50, color: [ "#FFF176"] },
+              { from: 0, to: 50, color: [ "#FDD835"] },
               { from: 51, to: 100, color: ["#F9A825"] },
-              { from: 101, to: 150, color: ["#ff7768"] },
-              { from: 151, to: 200, color: ["#B71C1C"] }
+              { from: 101, to: 150, color: ["#FF8A65"] },
+              { from: 151, to: 200, color: ["#BD421C"] }
           ],
        
             fill: '#ffe4dc'
