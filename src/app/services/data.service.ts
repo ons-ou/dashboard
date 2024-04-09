@@ -12,7 +12,7 @@ export class ToDoDataService {
   numberOfRecords$: Observable<number> = of(0);
   avgValueBySeason$: Observable<{ season: string; value: number }[]> = of([]);
   averageValuesByState$: Observable<{ name: string; value: number }[]> = of([]);
-  averageValuesByCounty$: Observable<{ name: string; value: number }[]> = of(
+  averageValuesByCountyForState$: Observable<{ name: string; value: number }[]> = of(
     []
   );
   numberOfObservations$: Observable<number> = of(0);
@@ -52,7 +52,7 @@ export class ToDoDataService {
       )
     );
 
-    this.averageValuesByCounty$ = changedElement$.pipe(
+    this.averageValuesByCountyForState$ = changedElement$.pipe(
       switchMap(() => selectedElements$),
       map((elements) =>
         this.sqlService.averageValueByCounty(
@@ -147,7 +147,7 @@ export class DataService {
   numberOfRecords$: Observable<number> = of(0);
   avgValueBySeason$: Observable<{ season: string; value: number }[]> = of([]);
   averageValuesByState$: Observable<{ name: string; value: number }[]> = of([]);
-  averageValuesByCounty$: Observable<{ name: string; value: number }[]> = of(
+  averageValuesByCountyForState$: Observable<{ name: string; value: number }[]> = of(
     []
   );
   numberOfObservations$: Observable<number> = of(0);
@@ -244,7 +244,7 @@ export class DataService {
       })
     );
     
-    this.averageValuesByCounty$ = changedElement$.pipe(
+    this.averageValuesByCountyForState$ = changedElement$.pipe(
       switchMap(() => selectedElements$),
       map((elements) => {
         return [

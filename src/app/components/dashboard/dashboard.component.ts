@@ -14,7 +14,6 @@ import { MatCardModule } from '@angular/material/card';
 import * as USAMapData from '../../../assets/United States of America.json';
 import { MapsModule,MapsTooltip,MapsTooltipService,LegendService, Internalize } from '@syncfusion/ej2-angular-maps';
 import { CardComponent } from '../card/card.component';
-import { MapComponent } from '../map/map.component';
 import { FiltersComponent } from '../filters/filters.component';
 import { DataService } from '../../services/data.service';
 import { NamesListComponent } from '../names-list/names-list.component';
@@ -53,7 +52,6 @@ import { InteractiveMapComponent } from '../interactive-map/interactive-map.comp
     MatCardModule,
     CommonModule,
     CardComponent,
-    MapComponent,
     FiltersComponent,
     ChartComponent,
     MapsModule,
@@ -100,27 +98,7 @@ this.states=states
 console.log(this.states)
 }
   )
-  let data$ = isStateChanged$.pipe(
-    switchMap((selectedElements: SelectedElements) => {
-      if (selectedElements.isState) {
-        return combineLatest([this.service.averageValuesByState$, this.states$]);
-      } else {
-        return combineLatest([this.service.averageValuesByCounty$, this.counties$]);
-      }
-    }),
-    map(([data, countyData]) => {
-      const dataMap = new Map(data.map((obj: any) => [obj.name, obj.value]));
-  console.log("data",dataMap)
-      return new Map(
-        countyData.features.map((d: any) => {
-          let x = dataMap.get(d.properties.name);
-          if (x !== undefined) {
-            return [d.id, dataMap.get(d.properties.name)];
-          } else return [d.id, -1];
-        })
-      );
-    })
-  );
+ 
   
  
 }

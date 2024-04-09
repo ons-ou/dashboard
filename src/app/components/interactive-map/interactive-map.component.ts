@@ -179,7 +179,8 @@ ngOnInit(){
       this.selectedState = selectedShape;
       console.log('this.selectedState (after setting):', this.selectedState);
       // Fetch counties data for selected state
-      this.service.averageValuesByCounty$.subscribe(countiesAQI=>{
+      //TODO : add state name 
+      this.service.averageValuesByCountyForState$.subscribe(countiesAQI=>{
    
         // Update layerOptions to show counties
         this.layerOptions=[{
