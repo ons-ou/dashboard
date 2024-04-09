@@ -74,30 +74,7 @@ export class DashboardComponent {
 USAMapData: any= USAMapData;
 
 constructor(){
-  let us$ = this.http.get<any>('assets/counties-albers-10m.json');
-  this.counties$ = us$.pipe(
-    map((us: any) => feature(us, us.objects.counties))
-  );
-  this.service.averageValuesByState$.subscribe(statesAQI => {
-    console.log("data", statesAQI);
-this.statesAQI=statesAQI.map(function(item) {
-  return {
-      name: item["name"],
-      value: item["value"]
-  };
-});
-console.log("data", this.statesAQI);
-  });
-  let isStateChanged$ = this.stateService.selectedElements$.pipe(
-    distinctUntilKeyChanged('isState')
-  );
-
-  this.states$ = us$.pipe(map((us: any) => feature(us, us.objects.states)));
-this.states$.subscribe(states=>{
-this.states=states
-console.log(this.states)
-}
-  )
+  
  
   
  
@@ -124,11 +101,11 @@ console.log(this.states)
     map(({ matches }) => {
       if (matches) {
         return [
-          { title: 'States', cols: 1, rows: 3 },
-          { title: 'Avg', cols: 1, rows: 1 },
-          { title: 'Records Count', cols: 1, rows: 1 },
-          { title: 'Obs Count', cols: 1, rows: 1 },
-          { title: 'Map', cols: 3, rows: 2 },
+          { title: 'Someting else', cols: 4/3, rows: 1 },
+          { title: 'Avg', cols: 4/3, rows: 1 },
+          { title: 'Records Count', cols: 4/3, rows: 1 },
+          { title: 'Obs Count', cols: 4/3, rows: 1 },
+         
           { title: 'Elements', cols: 4, rows: 1 },
           { title: 'Categories', cols: 2, rows: 1 },
           { title: 'Seasonal Trends', cols: 2, rows: 1 },
@@ -138,11 +115,11 @@ console.log(this.states)
       }
 
       return [
-        { title: 'States', cols: 1, rows: 3 },
-        { title: 'Avg', cols: 1, rows: 1 },
-        { title: 'Records Count', cols: 1, rows: 1 },
-        { title: 'Obs Count', cols: 1, rows: 1 },
-        { title: 'Map', cols: 3, rows: 2 },
+        { title: 'Someting else', cols: 4/3, rows: 1 },
+        { title: 'Avg', cols: 4/3, rows: 1 },
+        { title: 'Records Count', cols: 4/3, rows: 1 },
+        { title: 'Obs Count', cols: 4/3, rows: 1 },
+     
         { title: 'Elements', cols: 4, rows: 1 },
         { title: 'Categories', cols: 2, rows: 1 },
         { title: 'Seasonal Trends', cols: 2, rows: 1 },

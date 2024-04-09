@@ -1,6 +1,6 @@
 <div class="grid-container" *ngIf="element$ | async as element">
   <div class="grid-container">
-    <h1 class="mat-h1 title">Dashboard</h1>
+    <h1 class="mat-h1 title">United States Air Quality Dashboard: AQI Distribution and Pollutant Trends</h1>
 
     <app-filters></app-filters>
     <app-interactive-map></app-interactive-map>
@@ -16,10 +16,8 @@
             "
           >
             <ng-container [ngSwitch]="card.title">
-              <ng-template [ngSwitchCase]="'States'">
-                <app-names-list></app-names-list>
-              </ng-template>
-
+             
+<div class="center">
               <ng-template
                 [ngSwitchCase]="'Avg'"
                 *ngIf="avgaqi$ | async as avg"
@@ -53,8 +51,7 @@
                   [value]="sum"
                 ></app-card>
               </ng-template>
-              <ng-template [ngSwitchCase]="'Map'">
-              </ng-template>
+            </div>
               <ng-template
                 [ngSwitchCase]="'Categories'"
                 *ngIf="aqiCategories$ | async as categories"
