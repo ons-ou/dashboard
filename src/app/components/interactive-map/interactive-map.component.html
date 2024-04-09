@@ -1,5 +1,12 @@
 
+<div id="button" style="font-size:14px;margin-left: 100px;margin-top: 0px;display:none;left:100px;top:50px;">
+    <a id="category" style=" visibility:hidden;display:inline-block;cursor:pointer"> USA Map </a>
+    <p style=" visibility:hidden;display:inline-block" id="symbol">&nbsp;&gt;&gt;&nbsp;</p>
+    <p id="text" style="display:inline-block;"></p>
+</div>
+<div *ngFor="let option of layerOptions">
 <ejs-maps #containerLayer  (shapeSelected)="shapeSelected($event)" theme="HighContrastLight" [zoomSettings]='zoomSettings' [layers]="layerOptions"[legendSettings]="LegendOptions" id="container"  transform="scale(4)"style="height:500px;width:200px;" >
-   
-
+  
+    
 </ejs-maps>
+</div>
