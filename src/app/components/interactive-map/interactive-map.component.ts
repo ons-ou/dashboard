@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import * as USAMapData from '../../../assets/United States of America.json';
 
 import * as california from '../../../assets/California.json';
-import * as newYork from '../../../assets/Wyoming.json';
+import * as newYork from '../../../assets/New York.json';
 import { MapsModule,MapsTooltipService,LegendService , ColorMappingSettings, LayerSettings,ZoomSettings,MapsTheme, Maps, shapeSelected, IShapeSelectedEventArgs, Highlight, MapsTooltip, Marker, ILoadEventArgs, ILoadedEventArgs, MapsComponent } from '@syncfusion/ej2-angular-maps';
 import { DataService } from '../../services/data.service';
 
@@ -29,6 +29,8 @@ import {
 })
 
 export class InteractiveMapComponent  {
+  private countiesDataCache: { [state: string]: any } = {};
+
   public layerOptions!: any[];
   @ViewChild('maps') maps!: MapsComponent;
   public LegendOptions!: Object
@@ -46,9 +48,25 @@ USAMapData: any= USAMapData;
 statesAQI$: Observable<any[]> = of([]);
 
     constructor(private service: DataService, private http: HttpClient,private cdr: ChangeDetectorRef) {
-        let us$ = this.http.get<any>('assets/counties-albers-10m.json');
+      //  let us$ = this.http.get<any>('assets/counties-albers-10m.json');
         
-        this.service.averageValuesByCounty$.subscribe(countiesAQI=>{
+      const allStates: string[] = [
+        'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+        'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
+        'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+        'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada',
+        'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+        'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon',
+        'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+        'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
+        'West Virginia', 'Wisconsin', 'Wyoming','District of Columbia'
+      ];
+      allStates.forEach(state => {
+        this.fetchCountiesData(state).subscribe(data => {
+          this.countiesDataCache[state] = data;
+        });
+      });
         this.service.averageValuesByState$.subscribe(statesAQI => {
           
           this.statesAQI$ = of(statesAQI);
@@ -100,7 +118,7 @@ statesAQI$: Observable<any[]> = of([]);
               }
           ];
           this.refreshMap();
-      });})
+      });
       
          this.LegendOptions={
           visible:true,
@@ -156,14 +174,14 @@ statesAQI$: Observable<any[]> = of([]);
     
     if (!this.selectedState) {
       // No state selected yet, set the selected state
-      this.selectedState = "Texas";
+      this.selectedState = selectedShape;
       console.log('this.selectedState (after setting):', this.selectedState);
       // Fetch counties data for selected state
       this.service.averageValuesByCounty$.subscribe(countiesAQI=>{
-      this.fetchCountiesData("Texas").subscribe((countiesData: any) => {
+   
         // Update layerOptions to show counties
         this.layerOptions=[{
-          shapeData:countiesData,
+          shapeData:this.countiesDataCache[selectedShape],
           dataSource: countiesAQI,
                   shapeDataPath: "name",
                   shapePropertyPath: "name",
@@ -209,28 +227,14 @@ statesAQI$: Observable<any[]> = of([]);
         }];
         this.cdr.detectChanges();
         console.log(this.layerOptions)
-      })});
-    } else {
-      // A state is already selected, so the selected shape must be a county
-      console.log('County Selected:', selectedShape);
-    }
+      })}
+    
    
   }
   
 
   private fetchCountiesData(state: string): Observable<any> {
-    // Assuming you have a service to fetch counties data for a given state
-    // You need to implement this method according to your data source
-    // Example:
-    // return this.http.get<any>(`url/to/fetch/counties/data/${state}`);
-    // For demo purpose, returning a mock data
-    const mockCountiesData = {
-      // Mock counties data for the selected state
-    };
-    return new Observable<any>((observer) => {
-      observer.next(newYork);
-      observer.complete();
-    });
+    return this.http.get<any>(`/assets/${state}.json`);
   }
 }
  

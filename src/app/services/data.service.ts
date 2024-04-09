@@ -250,8 +250,8 @@ export class DataService {
         return [
           { name: 'Lawrence, Indiana', value: this.randomInt(0, 200) },
           { name: 'Lapeer, Michigan', value: this.randomInt(0, 200) },
-          {name: 'Cortland County', value: this.randomInt(0, 200) },
-          {name: 'Hamilton County', value: this.randomInt(0, 200) }
+          {name: 'Cortland', value: this.randomInt(0, 200) },
+          {name: 'Hamilton', value: this.randomInt(0, 200) }
         ];
       })
     );
