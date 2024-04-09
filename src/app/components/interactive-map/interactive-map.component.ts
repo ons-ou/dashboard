@@ -5,9 +5,9 @@ import {  Component,ChangeDetectorRef, ElementRef, Renderer2, SimpleChange, View
 import { HttpClient } from '@angular/common/http';
 
 import * as USAMapData from '../../../assets/United States of America.json';
-import * as texas from '../../../assets/texas.json';
+
 import * as california from '../../../assets/California.json';
-import * as newYork from '../../../assets/new-york-city.json';
+import * as newYork from '../../../assets/Wyoming.json';
 import { MapsModule,MapsTooltipService,LegendService , ColorMappingSettings, LayerSettings,ZoomSettings,MapsTheme, Maps, shapeSelected, IShapeSelectedEventArgs, Highlight, MapsTooltip, Marker, ILoadEventArgs, ILoadedEventArgs, MapsComponent } from '@syncfusion/ej2-angular-maps';
 import { DataService } from '../../services/data.service';
 
