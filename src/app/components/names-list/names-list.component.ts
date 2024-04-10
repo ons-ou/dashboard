@@ -24,7 +24,7 @@ export class NamesListComponent {
   stateService = inject(StateService);
 
   data$ = this.stateService.selectedElements$.pipe(
-    switchMap((elements)=> elements.isState? this.service.averageValuesByState$: this.service.averageValuesByCounty$)
+    switchMap((elements)=> elements.isState? this.service.averageValuesByState$: this.service.averageValuesByCountyForState$)
   );
   selectedName$: Observable<string> = this.stateService.selectedElements$.pipe(
     map((elements)=> elements.name)

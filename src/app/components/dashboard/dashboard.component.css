@@ -2,7 +2,9 @@
     padding: 20px;
     background: linear-gradient(180deg, #f6fcff 0%, #d0e5fd);
   }
-  
+  .center{
+    
+  }
   .title {
     place-self: center;
     text-align: center;

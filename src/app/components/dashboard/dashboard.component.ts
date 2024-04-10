@@ -1,6 +1,7 @@
 import { Component, SimpleChange, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -10,20 +11,29 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-
+import * as USAMapData from '../../../assets/United States of America.json';
+import { MapsModule,MapsTooltip,MapsTooltipService,LegendService, Internalize } from '@syncfusion/ej2-angular-maps';
 import { CardComponent } from '../card/card.component';
-import { MapComponent } from '../map/map.component';
 import { FiltersComponent } from '../filters/filters.component';
 import { DataService } from '../../services/data.service';
 import { NamesListComponent } from '../names-list/names-list.component';
 import { ChartComponent } from '../chart/chart.component';
-import { StateService } from '../../services/state.service';
+import { SelectedElements, StateService } from '../../services/state.service';
 import {
   categoryColors,
   colorsList,
   getCategories,
 } from '../../utils/categories';
-
+import { Feature, Point, GeoJsonProperties } from 'geojson';
+import {
+  Observable,
+  combineLatest,
+  distinctUntilKeyChanged,
+  of,
+  switchMap,
+} from 'rxjs';
+import { feature } from 'topojson';
+import { InteractiveMapComponent } from '../interactive-map/interactive-map.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -42,19 +52,36 @@ import {
     MatCardModule,
     CommonModule,
     CardComponent,
-    MapComponent,
     FiltersComponent,
     ChartComponent,
-  ],
+    MapsModule,
+    InteractiveMapComponent
+    
+  ],providers:[MapsTooltipService,LegendService]
 })
 export class DashboardComponent {
   private breakpointObserver = inject(BreakpointObserver);
   service = inject(DataService);
-
+  data$!: Observable<Map<string, number>>;
+  counties$!: Observable<any>;
+  states$!: Observable<any>;
+  states!: any;
+  statemap$!: Observable<Map<string, Feature<Point, GeoJsonProperties>>>;
   stateService = inject(StateService);
+  private http = inject(HttpClient);
+ statesAQI!: any[]; 
+ 
+USAMapData: any= USAMapData;
+
+constructor(){
+  
+ 
+  
+ 
+}
 
   element$ = this.stateService.selectedElements$.pipe(map((el) => el.element));
-
+  
   avgaqi$ = this.service.averageValue$;
   observationSum$ = this.service.numberOfObservations$;
   recordsSum = this.service.numberOfRecords$;
@@ -66,16 +93,19 @@ export class DashboardComponent {
 
   colors = colorsList;
 
+
+// Add remaining states with random values to the array
+
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
         return [
-          { title: 'States', cols: 1, rows: 3 },
-          { title: 'Avg', cols: 1, rows: 1 },
-          { title: 'Records Count', cols: 1, rows: 1 },
-          { title: 'Obs Count', cols: 1, rows: 1 },
-          { title: 'Map', cols: 3, rows: 2 },
+          { title: 'Someting else', cols: 4/3, rows: 1 },
+          { title: 'Avg', cols: 4/3, rows: 1 },
+          { title: 'Records Count', cols: 4/3, rows: 1 },
+          { title: 'Obs Count', cols: 4/3, rows: 1 },
+         
           { title: 'Elements', cols: 4, rows: 1 },
           { title: 'Categories', cols: 2, rows: 1 },
           { title: 'Seasonal Trends', cols: 2, rows: 1 },
@@ -85,11 +115,11 @@ export class DashboardComponent {
       }
 
       return [
-        { title: 'States', cols: 1, rows: 3 },
-        { title: 'Avg', cols: 1, rows: 1 },
-        { title: 'Records Count', cols: 1, rows: 1 },
-        { title: 'Obs Count', cols: 1, rows: 1 },
-        { title: 'Map', cols: 3, rows: 2 },
+        { title: 'Someting else', cols: 4/3, rows: 1 },
+        { title: 'Avg', cols: 4/3, rows: 1 },
+        { title: 'Records Count', cols: 4/3, rows: 1 },
+        { title: 'Obs Count', cols: 4/3, rows: 1 },
+     
         { title: 'Elements', cols: 4, rows: 1 },
         { title: 'Categories', cols: 2, rows: 1 },
         { title: 'Seasonal Trends', cols: 2, rows: 1 },
