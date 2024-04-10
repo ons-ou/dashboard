@@ -49,7 +49,7 @@ statesAQI$: Observable<any[]> = of([]);
 ngOnInit(){
   document.getElementById('category')!.onclick = () => {
    this.returntoUSAMAP()
-      let button: HTMLElement | null= document.getElementById('button');
+      let button: HTMLElement | null= document.getElementById('buttonMap');
       button!.style.display = 'none';
    
       (<HTMLElement>document.getElementById('category')).style.visibility = 'hidden';
@@ -167,9 +167,8 @@ ngOnInit(){
 
   public shapeSelected(args: IShapeSelectedEventArgs): void {
     const selectedShape: string = (args.data as any)['name'];
-    
     if (!this.selectedState) {
-      let button: HTMLElement | null  = document.getElementById('button'); button!.style.display = 'block'; 
+      let button: HTMLElement | null  = document.getElementById('buttonMap'); button!.style.display = 'block'; 
    
         (<HTMLElement>document.getElementById('category')).style.visibility = 'visible';
         (<HTMLElement>document.getElementById('text')).innerHTML = selectedShape;
@@ -181,8 +180,9 @@ ngOnInit(){
       // Fetch counties data for selected state
       //TODO : add state name 
       this.service.averageValuesByCountyForState$.subscribe(countiesAQI=>{
-   
         // Update layerOptions to show counties
+        //keep the if because on each selection of the filters countiesAQI changes so the map rerenders
+        if(this.selectedState)
         this.layerOptions=[{
           shapeData:this.countiesDataCache[selectedShape],
           dataSource: countiesAQI,
@@ -228,8 +228,8 @@ ngOnInit(){
             opacity: 1
           }
         }];
-        this.cdr.detectChanges();
-        console.log(this.layerOptions)
+    
+        
       })}
     
    
@@ -286,6 +286,5 @@ ngOnInit(){
 ];
 this.cdr.detectChanges();
 this.selectedState=null
-console.log("aa",this.layerOptions)
 }}
  
