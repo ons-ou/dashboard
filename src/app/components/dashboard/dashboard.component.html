@@ -1,19 +1,15 @@
+<app-navbar></app-navbar>
 <div class="grid-container" *ngIf="element$ | async as element">
   <div class="grid-container">
-    <h1 class="mat-h1 title">Dashboard</h1>
-
-    <app-filters></app-filters>
-
-    <mat-grid-list cols="4" rowHeight="400px">
-      @for (card of cards | async; track card) {
+    <div class="end-panel">
+      <app-date-select></app-date-select>
+    </div>
+    <mat-grid-list cols="3" rowHeight="250px">
+      @for (card of cards; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card class="dashboard-card">
           <mat-card-content
-            [class]="
-              card.cols == 4
-                ? 'dashboard-card-content'
-                : 'dashboard-small-card-content'
-            "
+            class="dashboard-card-content center-content"
           >
             <ng-container [ngSwitch]="card.title">
               <ng-template [ngSwitchCase]="'States'">
@@ -64,7 +60,12 @@
                   [canvasId]="'categories'"
                   [labels]="getValues(categories, 'name')"
                   [values]="getValues(categories, 'value')"
-                  [colors]="genenrateColorsByLabel(getValues(categories, 'name'), element)"
+                  [colors]="
+                    genenrateColorsByLabel(
+                      getValues(categories, 'name'),
+                      element
+                    )
+                  "
                   [title]="'Distribution of AQI Categories in the USA'"
                   [chartType]="'doughnut'"
                 ></app-chart>

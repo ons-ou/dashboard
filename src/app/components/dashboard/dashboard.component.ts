@@ -13,7 +13,6 @@ import { MatCardModule } from '@angular/material/card';
 
 import { CardComponent } from '../card/card.component';
 import { MapComponent } from '../map/map.component';
-import { FiltersComponent } from '../filters/filters.component';
 import { DataService } from '../../services/data.service';
 import { NamesListComponent } from '../names-list/names-list.component';
 import { ChartComponent } from '../chart/chart.component';
@@ -23,6 +22,8 @@ import {
   colorsList,
   getCategories,
 } from '../../utils/categories';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { DateSelectComponent } from '../date-select/date-select.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,12 +44,12 @@ import {
     CommonModule,
     CardComponent,
     MapComponent,
-    FiltersComponent,
     ChartComponent,
+    NavbarComponent,
+    DateSelectComponent
   ],
 })
 export class DashboardComponent {
-  private breakpointObserver = inject(BreakpointObserver);
   service = inject(DataService);
 
   stateService = inject(StateService);
@@ -66,38 +67,17 @@ export class DashboardComponent {
 
   colors = colorsList;
 
-  /** Based on the screen size, switch from standard to one column per row */
-  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(({ matches }) => {
-      if (matches) {
-        return [
-          { title: 'States', cols: 1, rows: 3 },
-          { title: 'Avg', cols: 1, rows: 1 },
-          { title: 'Records Count', cols: 1, rows: 1 },
-          { title: 'Obs Count', cols: 1, rows: 1 },
-          { title: 'Map', cols: 3, rows: 2 },
-          { title: 'Elements', cols: 4, rows: 1 },
-          { title: 'Categories', cols: 2, rows: 1 },
-          { title: 'Seasonal Trends', cols: 2, rows: 1 },
-          { title: 'hour', cols: 2, rows: 1 },
-          { title: 'day', cols: 2, rows: 1 },
-        ];
-      }
-
-      return [
-        { title: 'States', cols: 1, rows: 3 },
-        { title: 'Avg', cols: 1, rows: 1 },
-        { title: 'Records Count', cols: 1, rows: 1 },
-        { title: 'Obs Count', cols: 1, rows: 1 },
-        { title: 'Map', cols: 3, rows: 2 },
-        { title: 'Elements', cols: 4, rows: 1 },
-        { title: 'Categories', cols: 2, rows: 1 },
-        { title: 'Seasonal Trends', cols: 2, rows: 1 },
-        { title: 'hour', cols: 2, rows: 1 },
-        { title: 'day', cols: 2, rows: 1 },
-      ];
-    })
-  );
+  cards = [
+    { title: 'Map', cols: 3, rows: 4 },
+    { title: 'Avg', cols: 1, rows: 1 },
+    { title: 'Records Count', cols: 1, rows: 1 },
+    { title: 'Obs Count', cols: 1, rows: 1 },
+    { title: 'Elements', cols: 3, rows: 3 },
+    { title: 'Categories', cols: 3, rows: 3 },
+    { title: 'Seasonal Trends', cols: 3, rows: 3 },
+    { title: 'hour', cols: 3, rows: 3 },
+    { title: 'day', cols: 3, rows: 3 },
+  ];
 
   getValues(list: any[], key: string): any[] {
     return list.map((el) => el[key]);

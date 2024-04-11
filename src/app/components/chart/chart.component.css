@@ -1,3 +1,11 @@
 .chart-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   height: 100%;
+}
+
+canvas {
+  min-height: 200px;
 }

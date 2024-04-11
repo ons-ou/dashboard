@@ -1,22 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { StateService } from '../../services/state.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+
 import {
   BehaviorSubject,
   Observable,
   combineLatest,
-  filter,
   interval,
   map,
   of,
   switchMap,
   tap,
 } from 'rxjs';
+import { MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-date-select',
@@ -28,9 +31,13 @@ import {
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule, 
+    MatInputModule
   ],
   templateUrl: './date-select.component.html',
   styleUrl: './date-select.component.css',
+  providers: [NativeDateAdapter],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DateSelectComponent {
@@ -53,10 +60,11 @@ export class DateSelectComponent {
   constructor(private fb: FormBuilder, private stateService: StateService) {
     this.dateForm = this.fb.group({
       selectedYear: [1985],
-      selectedMonth: ['January']
+      selectedMonth: ['January'],
     });
 
-    this.dateForm.valueChanges.subscribe(() => {
+    this.dateForm.valueChanges.subscribe((res) => {
+      console.log(res)
       const currentYearIndex = this.years.indexOf(this.dateForm.value.selectedYear);
       const currentMonthIndex = this.months.indexOf(this.dateForm.value.selectedMonth);
 
@@ -142,5 +150,6 @@ export class DateSelectComponent {
   play(): void {
     this.playSubject.next(!this.playSubject.value);
   }
+
 }
 

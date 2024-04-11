@@ -1,18 +1,6 @@
 .grid-container {
     padding: 20px;
-    background: linear-gradient(180deg, #f6fcff 0%, #d0e5fd);
-  }
-  
-  .title {
-    place-self: center;
-    text-align: center;
-    font-size: 2rem;
-    line-height: 1.5rem;
-    padding-top: 10px;
-    padding-bottom: 20px;
-    margin-bottom: 1%;
-    color: #014357;
-    font-weight: 900;
+    background: rgb(242, 241, 241);
   }
   
   .dashboard-card {
@@ -24,15 +12,17 @@
   }
   
   .dashboard-card-content {
-    height: 80%;
-    width: 28%;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    max-height: 80%;
     text-align: center;
-    margin: auto;
+    transform: translate(-50%, -50%);
   }
   
-  .dashboard-small-card-content {
-    height: 80%;
-    width: 70%;
-    text-align: center;
-    margin: auto;
-  }
+  .end-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+}

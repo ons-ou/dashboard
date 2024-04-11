@@ -7,7 +7,13 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { Chart, ChartTypeRegistry, LegendItem, registerables } from 'chart.js';
+import {
+  Chart,
+  ChartTypeRegistry,
+  LegendItem,
+  LegendOptions,
+  registerables,
+} from 'chart.js';
 import { categoryColors } from '../../utils/categories';
 
 @Component({
@@ -31,10 +37,11 @@ export class ChartComponent {
 
   renderer = inject(Renderer2);
 
-  generateLabels = (chart: Chart) : LegendItem[] => {
+  generateLabels = (chart: Chart): LegendItem[] => {
+    if (!chart.data) return [];
     const datasets = chart.data.datasets;
     const uniqueColors = new Map<string, string>();
-  
+
     datasets.forEach((dataset) => {
       const backgroundColor = dataset.backgroundColor;
       if (Array.isArray(backgroundColor)) {
@@ -59,7 +66,7 @@ export class ChartComponent {
         }
       }
     });
-  
+
     return Array.from(uniqueColors.entries()).map(([color, category]) => ({
       text: category,
       fillStyle: color,
@@ -70,7 +77,6 @@ export class ChartComponent {
       pointStyle: 'circle',
     }));
   };
-  
 
   constructor() {
     Chart.register(...registerables);
@@ -80,18 +86,17 @@ export class ChartComponent {
     let chart = Chart.getChart(this.canvasId);
     if (chart !== undefined) chart.destroy();
     this.createChart();
-
   }
 
   createChart(): void {
     if (!this.canvas) return;
-  
+
     const canvasElement = this.canvas.nativeElement;
-  
+
     const parentElement = canvasElement.parentElement;
-  
+
     if (!parentElement) return;
-  
+
     const parentComputedStyle = window.getComputedStyle(parentElement);
     const parentWidth = parseFloat(
       parentComputedStyle.getPropertyValue('width')
@@ -101,12 +106,12 @@ export class ChartComponent {
     );
     const canvasWidth = parentWidth * 0.7;
     const canvasHeight = parentHeight * 0.7;
-  
+
     this.renderer.setStyle(canvasElement, 'width', canvasWidth + 'px');
     this.renderer.setStyle(canvasElement, 'height', canvasHeight + 'px');
-  
+
     const ctx = this.canvas.nativeElement.getContext('2d');
-  
+
     const scales: any = {};
     if (this.axis !== undefined) {
       if (this.axis?.x !== undefined) {
@@ -117,7 +122,7 @@ export class ChartComponent {
           },
         };
       }
-  
+
       if (this.axis?.y !== undefined) {
         scales.y = {
           title: {
@@ -127,10 +132,16 @@ export class ChartComponent {
         };
       }
     }
-  
-    let labels: any= {}
-    if (!this.legendDisplay)
-      labels.generateLabels = this.generateLabels
+
+    let legendOptions: any = {};
+
+    if (!this.legendDisplay) {
+      legendOptions = {
+        labels: {
+          generateLabels: this.generateLabels,
+        },
+      };
+    }
 
     new Chart(ctx, {
       type: this.chartType,
@@ -151,18 +162,25 @@ export class ChartComponent {
           tooltip: {
             usePointStyle: true,
             callbacks: {
-              label: function (context) {
+              label: function (context: any) {
                 return `Value: ${context.raw}`;
               },
             },
           },
-          legend: {
-            labels
-          }
+          legend: legendOptions,
+          title: {
+            display: true,
+            text: this.title,
+            padding: 17,
+            font: {
+              size: 20,
+            },
+            position: 'bottom',
+          },
         },
+
         scales: scales,
       },
     });
   }
-  
 }
