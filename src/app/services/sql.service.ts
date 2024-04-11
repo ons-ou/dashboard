@@ -8,17 +8,17 @@ export class SqlService implements DataServiceInterface{
 
   constructor() {
   }
-  averageValueByName(element: string, year: number, month: number, isState: boolean): { name: string; value: number; }[] {
-    return isState?  this.averageValueByState(element, year, month) : this.averageValueByCounty(element, year, month)
+  averageValueByName(element: string, year: number, month: number, county: string | null | null): { name: string; value: number; }[] {
+    return county?  this.averageValueByState(element, year, month) : this.averageValueByCounty(element, year, month)
   }
 
-  averageValue(element: string, year: number, name: string, isState: boolean, month: number): number {
+  averageValue(element: string, year: number, name: string | null, county: string | null, month: number): number {
     let tableTitle = element+'_table'
     
     throw new Error('Method not implemented.');
   }
   
-  numberOfRecords(element: string, year: number, name: string, isState: boolean, month: number): number {
+  numberOfRecords(element: string, year: number, name: string | null, county: string | null, month: number): number {
     throw new Error('Method not implemented.');
   }
   
@@ -27,20 +27,20 @@ export class SqlService implements DataServiceInterface{
     throw new Error('Method not implemented.');
   }
   
-  avgValueBySeason(element: string, year: number, name: string, isState: boolean): { season: string; value: number; }[] {
+  avgValueBySeason(element: string, year: number, name: string | null, county: string | null): { season: string; value: number; }[] {
     throw new Error('Method not implemented.');
   }
 
   averageValueByState(element: string, year: number, month: number): { name: string; value: number; }[] {
     throw new Error('Method not implemented.');
   }
-  numberOfObservations(element: string, year: number, name: string, isState: boolean, month: number): number {
+  numberOfObservations(element: string, year: number, name: string | null, county: string | null, month: number): number {
     throw new Error('Method not implemented.');
   }
-  averageValueByHour(element: string, year: number,name: string, isState: boolean, month: number): { time: string, value: number }[] {
+  averageValueByHour(element: string, year: number,name: string | null, county: string | null, month: number): { time: string, value: number }[] {
     throw new Error('Method not implemented.');
   }
-  averageValueByDay(element: string, year: number,name: string, isState: boolean, month: number): { time: string, value: number }[] {
+  averageValueByDay(element: string, year: number,name: string | null, county: string | null, month: number): { time: string, value: number }[] {
     throw new Error('Method not implemented.');
   }
 

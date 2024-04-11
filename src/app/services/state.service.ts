@@ -4,9 +4,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export interface SelectedElements {
   element: string;
   year: number;
-  name: string;
   month: number;
-  isState: boolean;
+  state: string | null;
+  county: string | null
 }
 
 @Injectable({
@@ -16,22 +16,27 @@ export class StateService {
 
   private selectedElementsSubject: BehaviorSubject<SelectedElements> = new BehaviorSubject<SelectedElements>({
     element: 'AQI',
-    year: 0,
-    name: '',
+    year: 1980,
     month: 0,
-    isState: true
+    state: null,
+    county: null
+
   });
 
   selectedElements$: Observable<SelectedElements> = this.selectedElementsSubject.asObservable();
 
   constructor() { }
 
-  get isState(): boolean {
-    return this.selectedElementsSubject.value.isState;
+  get state(): string | null {
+    return this.selectedElementsSubject.value.state
   }
 
-  get name(): string {
-    return this.selectedElementsSubject.value.name
+  get county(): string | null {
+    return this.selectedElementsSubject.value.county
+  }
+
+  get element(): string {
+    return this.selectedElementsSubject.value.element
   }
 
   setSelectedElement(element: string): void {
@@ -42,18 +47,21 @@ export class StateService {
     this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, year, month: 0 });
   }
 
-  setSelectedName(name: string): void {
-    if (this.selectedElementsSubject.value.name == name)
-    this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, name: '' });
+  setSelectedState(state: string | null): void {
+    if (state !== null)
+    this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, state, county: null });
     else
-    this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, name });
+    this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, state: null, county: null });
   }
 
   setSelectedMonth(month: number): void {
     this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, month });
   }
 
-  setIsState(isState: boolean): void {
-    this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, isState });
+  setSelectedCounty(county: string | null): void {
+    if (county !== null)
+    this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, county });
+    else
+    this.selectedElementsSubject.next({ ...this.selectedElementsSubject.value, county: null });
   }
 }

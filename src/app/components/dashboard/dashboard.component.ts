@@ -1,6 +1,6 @@
-import { Component, SimpleChange, inject } from '@angular/core';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { Component, inject } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -10,11 +10,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-
+import * as USAMapData from '../../../assets/United States of America.json';
 import { CardComponent } from '../card/card.component';
-import { MapComponent } from '../map/map.component';
 import { DataService } from '../../services/data.service';
-import { NamesListComponent } from '../names-list/names-list.component';
 import { ChartComponent } from '../chart/chart.component';
 import { StateService } from '../../services/state.service';
 import {
@@ -22,7 +20,11 @@ import {
   colorsList,
   getCategories,
 } from '../../utils/categories';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { Feature, Point, GeoJsonProperties } from 'geojson';
+import {
+  Observable,
+} from 'rxjs';
+import { InteractiveMapComponent } from '../interactive-map/interactive-map.component';import { NavbarComponent } from '../navbar/navbar.component';
 import { DateSelectComponent } from '../date-select/date-select.component';
 
 @Component({
@@ -39,23 +41,21 @@ import { DateSelectComponent } from '../date-select/date-select.component';
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    NamesListComponent,
     MatCardModule,
     CommonModule,
     CardComponent,
-    MapComponent,
     ChartComponent,
+    InteractiveMapComponent,  
     NavbarComponent,
     DateSelectComponent
-  ],
+  ]
 })
 export class DashboardComponent {
   service = inject(DataService);
-
   stateService = inject(StateService);
 
   element$ = this.stateService.selectedElements$.pipe(map((el) => el.element));
-
+  
   avgaqi$ = this.service.averageValue$;
   observationSum$ = this.service.numberOfObservations$;
   recordsSum = this.service.numberOfRecords$;
@@ -67,17 +67,19 @@ export class DashboardComponent {
 
   colors = colorsList;
 
-  cards = [
-    { title: 'Map', cols: 3, rows: 4 },
-    { title: 'Avg', cols: 1, rows: 1 },
-    { title: 'Records Count', cols: 1, rows: 1 },
-    { title: 'Obs Count', cols: 1, rows: 1 },
-    { title: 'Elements', cols: 3, rows: 3 },
-    { title: 'Categories', cols: 3, rows: 3 },
-    { title: 'Seasonal Trends', cols: 3, rows: 3 },
-    { title: 'hour', cols: 3, rows: 3 },
-    { title: 'day', cols: 3, rows: 3 },
-  ];
+
+  cards =     [
+    { title: 'Map', cols: 3, rows: 3 },   
+  { title: 'Avg', cols: 1, rows: 1 },
+  { title: 'Records Count', cols: 1, rows: 1 },
+  { title: 'Obs Count', cols: 1, rows: 1 },
+  { title: 'Elements', cols: 3, rows: 3 },
+  { title: 'Categories', cols: 3, rows: 3 },
+  { title: 'Seasonal Trends', cols: 3, rows: 3 },
+  { title: 'hour', cols: 3, rows: 3 },
+  { title: 'day', cols: 3, rows: 3 },
+]
+
 
   getValues(list: any[], key: string): any[] {
     return list.map((el) => el[key]);

@@ -31,7 +31,6 @@ export const getCategories = (element: string)=>{
     'Hazardous': 'rgb(129, 63, 63)'     // Brown
   };
 
-
 export const colorsList = [
     'rgb(122, 228, 228)',
     'rgb(202, 146, 239)',

@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, distinctUntilChanged, map, of, switchMap } from 'rxjs';
+import { Observable, distinctUntilChanged, map, combineLatest, of, switchMap } from 'rxjs';
 import { StateService } from './state.service';
 import { SqlService } from './sql.service';
+import { elements } from 'chart.js';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class ToDoDataService {
   numberOfRecords$: Observable<number> = of(0);
   avgValueBySeason$: Observable<{ season: string; value: number }[]> = of([]);
   averageValuesByState$: Observable<{ name: string; value: number }[]> = of([]);
-  averageValuesByCounty$: Observable<{ name: string; value: number }[]> = of(
+  averageValuesByCountyForState$: Observable<{ name: string; value: number }[]> = of(
     []
   );
   numberOfObservations$: Observable<number> = of(0);
@@ -19,8 +20,14 @@ export class ToDoDataService {
   averageValuesByDay$: Observable<{ time: string; value: number }[]> = of([]);
   stateService = inject(StateService);
   sqlService = inject(SqlService);
+  states$: any;
+  counties$: any;
 
   constructor() {
+   
+
+   
+
     let selectedElements$ = this.stateService.selectedElements$;
 
     let changedElement$ = selectedElements$.pipe(
@@ -29,7 +36,7 @@ export class ToDoDataService {
           prev.element === curr.element &&
           prev.year === curr.year &&
           prev.month === curr.month &&
-          prev.isState === curr.isState
+          prev.state === curr.state
         );
       })
     );
@@ -45,7 +52,7 @@ export class ToDoDataService {
       )
     );
 
-    this.averageValuesByCounty$ = changedElement$.pipe(
+    this.averageValuesByCountyForState$ = changedElement$.pipe(
       switchMap(() => selectedElements$),
       map((elements) =>
         this.sqlService.averageValueByCounty(
@@ -62,8 +69,8 @@ export class ToDoDataService {
         this.sqlService.averageValue(
           elements.element,
           elements.year,
-          elements.name,
-          elements.isState,
+          elements.state,
+          elements.county,
           elements.month
         )
       )
@@ -75,8 +82,8 @@ export class ToDoDataService {
         this.sqlService.numberOfRecords(
           elements.element,
           elements.year,
-          elements.name,
-          elements.isState,
+          elements.state,
+          elements.county,
           elements.month
         )
       )
@@ -87,8 +94,8 @@ export class ToDoDataService {
         this.sqlService.avgValueBySeason(
           elements.element,
           elements.year,
-          elements.name,
-          elements.isState
+          elements.state,
+          elements.county
         )
       )
     );
@@ -99,8 +106,8 @@ export class ToDoDataService {
         this.sqlService.numberOfObservations(
           elements.element,
           elements.year,
-          elements.name,
-          elements.isState,
+          elements.state,
+          elements.county,
           elements.month
         )
       )
@@ -111,8 +118,8 @@ export class ToDoDataService {
         this.sqlService.averageValueByHour(
           elements.element,
           elements.year,
-          elements.name,
-          elements.isState,
+          elements.state,
+          elements.county,
           elements.month
         )
       )
@@ -123,8 +130,8 @@ export class ToDoDataService {
         this.sqlService.averageValueByDay(
           elements.element,
           elements.year,
-          elements.name,
-          elements.isState,
+          elements.state,
+          elements.county,
           elements.month
         )
       )
@@ -139,10 +146,7 @@ export class DataService {
   averageValue$: Observable<number> = of(0);
   numberOfRecords$: Observable<number> = of(0);
   avgValueBySeason$: Observable<{ season: string; value: number }[]> = of([]);
-  averageValuesByState$: Observable<{ name: string; value: number }[]> = of([]);
-  averageValuesByCounty$: Observable<{ name: string; value: number }[]> = of(
-    []
-  );
+  avgValuesByName$: Observable<{ name: string; value: number }[]> = of([]);
   numberOfObservations$: Observable<number> = of(0);
   avgValuesByDay$: Observable<{ label: string; value: number }[]>;
   maxCountByHour$: Observable<{ label: string; value: number }[]>;
@@ -155,6 +159,8 @@ export class DataService {
   ]);
   
 
+  
+
   private randomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -163,6 +169,8 @@ export class DataService {
     private stateService: StateService,
     private sqlService: SqlService
   ) {
+    
+
     let selectedElements$ = this.stateService.selectedElements$;
 
     let changedElement$ = selectedElements$.pipe(
@@ -171,10 +179,71 @@ export class DataService {
           prev.element === curr.element &&
           prev.year === curr.year &&
           prev.month === curr.month &&
-          prev.isState === curr.isState
+          prev.county === curr.county
         );
       })
     );
+
+    this.avgValuesByName$ = selectedElements$.pipe(
+      map((elements) => elements.county? [
+        { name: 'Lawrence, Indiana', value: this.randomInt(0, 200) },
+        { name: 'Lapeer, Michigan', value: this.randomInt(0, 200) },
+        {name: 'Cortland', value: this.randomInt(0, 200) },
+        {name: 'Hamilton', value: this.randomInt(0, 200) }
+      ] : [
+        {"name":"Alabama","value":this.randomInt(0, 200) },
+        {"name":"Alaska","value":this.randomInt(0, 200) },
+        {"name":"Arizona","value":this.randomInt(0, 200) },
+        {"name":"Arkansas","value":this.randomInt(0, 200) },
+        {"name":"California","value":this.randomInt(0, 200) },
+        {"name":"Colorado","value":this.randomInt(0, 200) },
+        {"name":"Connecticut","value":this.randomInt(0, 200) },
+        {"name":"Delaware","value":this.randomInt(0, 200) },
+        {"name":"Florida","value":this.randomInt(0, 200) },
+        {"name":"Georgia","value":this.randomInt(0, 200) },
+        {"name":"Hawaii","value":this.randomInt(0, 200) },
+        {"name":"Idaho","value":this.randomInt(0, 200) },
+        {"name":"Illinois","value":this.randomInt(0, 200) },
+        {"name":"Indiana","value":this.randomInt(0, 200) },
+        {"name":"Iowa","value":this.randomInt(0, 200) },
+        {"name":"Kansas","value":this.randomInt(0, 200) },
+        {"name":"Kentucky","value":this.randomInt(0, 200) },
+        {"name":"Louisiana","value":this.randomInt(0, 200) },
+        {"name":"Maine","value":this.randomInt(0, 200) },
+        {"name":"Maryland","value":this.randomInt(0, 200) },
+        {"name":"Massachusetts","value":this.randomInt(0, 200) },
+        {"name":"Michigan","value":this.randomInt(0, 200) },
+        {"name":"Minnesota","value":this.randomInt(0, 200) },
+        {"name":"Mississippi","value":this.randomInt(0, 200) },
+        {"name":"Missouri","value":this.randomInt(0, 200) },
+        {"name":"Montana","value":this.randomInt(0, 200) },
+        {"name":"Nebraska","value":this.randomInt(0, 200) },
+        {"name":"Nevada","value":this.randomInt(0, 200) },
+        {"name":"New Hampshire","value":this.randomInt(0, 200) },
+        {"name":"New Jersey","value":this.randomInt(0, 200) },
+        {"name":"New Mexico","value":this.randomInt(0, 200) },
+        {"name":"New York","value":this.randomInt(0, 200) },
+        {"name":"North Carolina","value":this.randomInt(0, 200) },
+        {"name":"North Dakota","value":this.randomInt(0, 200) },
+        {"name":"Ohio","value":this.randomInt(0, 200) },
+        {"name":"Oklahoma","value":this.randomInt(0, 200) },
+        {"name":"Oregon","value":this.randomInt(0, 200) },
+        {"name":"Pennsylvania","value":this.randomInt(0, 200) },
+        {"name":"Rhode Island","value":this.randomInt(0, 200) },
+        {"name":"South Carolina","value":this.randomInt(0, 200) },
+        {"name":"South Dakota","value":this.randomInt(0, 200) },
+        {"name":"Tennessee","value":this.randomInt(0, 200) },
+        {"name":"Texas","value":this.randomInt(0, 200) },
+        {"name":"Utah","value":this.randomInt(0, 200) },
+        {"name":"Vermont","value":this.randomInt(0, 200) },
+        {"name":"Virginia","value":this.randomInt(0, 200) },
+        {"name":"Washington","value":this.randomInt(0, 200) },
+        {"name":"West Virginia","value":this.randomInt(0, 200) },
+        {"name":"Wisconsin","value":this.randomInt(0, 200) },
+        {"name":"Wyoming","value":this.randomInt(0, 200) },
+        {"name":"District of Columbia","value":this.randomInt(0, 200) }
+      ])
+    )
 
     this.pollutionElements$ = selectedElements$.pipe(
       map(() => [
@@ -224,27 +293,6 @@ export class DataService {
         { label: '7:00 PM', value: this.randomInt(0, 200) },
         { label: '8:00 PM', value: this.randomInt(0, 200) },
       ])
-    );
-    
-    this.averageValuesByState$ = changedElement$.pipe(
-      switchMap(() => selectedElements$),
-      map((elements) => {
-        return [
-          { name: 'California', value: this.randomInt(0, 200) },
-          { name: 'Texas', value: this.randomInt(0, 200) },
-          { name: 'New York', value: this.randomInt(0, 200) },
-        ];
-      })
-    );
-    
-    this.averageValuesByCounty$ = changedElement$.pipe(
-      switchMap(() => selectedElements$),
-      map((elements) => {
-        return [
-          { name: 'Lawrence, Indiana', value: this.randomInt(0, 200) },
-          { name: 'Lapeer, Michigan', value: this.randomInt(0, 200) },
-        ];
-      })
     );
     
     this.averageValue$ = selectedElements$.pipe(

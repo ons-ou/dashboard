@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MapsModule,MapsTooltipService,LegendService , ColorMappingSettings, LayerSettings,ZoomSettings} from '@syncfusion/ej2-angular-maps';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +10,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
   imports: [
     DashboardComponent
   ],
+  providers:[MapsTooltipService,LegendService,LayerSettings,ZoomSettings,ColorMappingSettings],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {

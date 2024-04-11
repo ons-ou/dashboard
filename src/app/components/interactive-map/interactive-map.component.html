@@ -1,0 +1,38 @@
+<div
+  id="buttonMap"
+  [style.display]="usMapSelected? 'none' : 'inline-block'"
+  style="
+    font-size: 14px;
+    margin-left: 100px;
+    margin-top: 0px;
+    left: 100px;
+    top: 50px;
+  "
+>
+  <a
+    id="category"
+    [style.hidden]="usMapSelected"
+    (click)="returnToUSAMap()"
+    style="display: inline-block; cursor: pointer"
+  >
+    USA Map
+  </a>
+  <p style="display: inline-block" id="symbol"  >
+    &nbsp;&gt;&gt;&nbsp;
+  </p>
+  <p id="text" style="display: inline-block" >{{selectedElement$ | async}}</p>
+</div>
+<div *ngFor="let option of (layerOptions$ | async) as layerOptions">
+  <ejs-maps
+    #containerLayer
+    (shapeSelected)="shapeSelected($event)"
+    theme="HighContrastLight"
+    [zoomSettings]="zoomSettings"
+    [layers]="layerOptions"
+    [legendSettings]="LegendOptions"
+    id="container"
+    transform="scale(4)"
+    style="height: 500px; width: 200px"
+  >
+  </ejs-maps>
+</div>

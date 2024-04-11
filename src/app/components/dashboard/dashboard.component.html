@@ -8,50 +8,47 @@
       @for (card of cards; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card class="dashboard-card">
-          <mat-card-content
-            class="dashboard-card-content center-content"
-          >
+          <mat-card-content class="dashboard-card-content center-content">
             <ng-container [ngSwitch]="card.title">
-              <ng-template [ngSwitchCase]="'States'">
-                <app-names-list></app-names-list>
-              </ng-template>
+              <div class="center">
+                <ng-template [ngSwitchCase]="'Map'">
+                  <app-interactive-map></app-interactive-map>
+                </ng-template>
 
-              <ng-template
-                [ngSwitchCase]="'Avg'"
-                *ngIf="avgaqi$ | async as avg"
-              >
-                <app-card
-                  [color]="'cornflowerblue'"
-                  [icon]="'air'"
-                  [title]="'Average value'"
-                  [value]="avg"
-                ></app-card>
-              </ng-template>
-              <ng-template
-                [ngSwitchCase]="'Records Count'"
-                *ngIf="recordsSum | async as rec"
-              >
-                <app-card
-                  [color]="'dimgrey'"
-                  [icon]="'notes'"
-                  [title]="'Number of Records'"
-                  [value]="rec"
-                ></app-card>
-              </ng-template>
-              <ng-template
-                [ngSwitchCase]="'Obs Count'"
-                *ngIf="observationSum$ | async as sum"
-              >
-                <app-card
-                  [color]="'lightseagreen'"
-                  [icon]="'search'"
-                  [title]="'Number of Observations'"
-                  [value]="sum"
-                ></app-card>
-              </ng-template>
-              <ng-template [ngSwitchCase]="'Map'">
-                <app-map></app-map>
-              </ng-template>
+                <ng-template
+                  [ngSwitchCase]="'Avg'"
+                  *ngIf="avgaqi$ | async as avg"
+                >
+                  <app-card
+                    [color]="'cornflowerblue'"
+                    [icon]="'air'"
+                    [title]="'Average value'"
+                    [value]="avg"
+                  ></app-card>
+                </ng-template>
+                <ng-template
+                  [ngSwitchCase]="'Records Count'"
+                  *ngIf="recordsSum | async as rec"
+                >
+                  <app-card
+                    [color]="'dimgrey'"
+                    [icon]="'notes'"
+                    [title]="'Number of Records'"
+                    [value]="rec"
+                  ></app-card>
+                </ng-template>
+                <ng-template
+                  [ngSwitchCase]="'Obs Count'"
+                  *ngIf="observationSum$ | async as sum"
+                >
+                  <app-card
+                    [color]="'lightseagreen'"
+                    [icon]="'search'"
+                    [title]="'Number of Observations'"
+                    [value]="sum"
+                  ></app-card>
+                </ng-template>
+              </div>
               <ng-template
                 [ngSwitchCase]="'Categories'"
                 *ngIf="aqiCategories$ | async as categories"
