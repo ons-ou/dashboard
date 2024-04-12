@@ -185,7 +185,7 @@ export class DataService {
     );
 
     this.avgValuesByName$ = selectedElements$.pipe(
-      map((elements) => elements.county? [
+      map((elements) => elements.state? [
         { name: 'Lawrence, Indiana', value: this.randomInt(0, 200) },
         { name: 'Lapeer, Michigan', value: this.randomInt(0, 200) },
         {name: 'Cortland', value: this.randomInt(0, 200) },

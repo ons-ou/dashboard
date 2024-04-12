@@ -77,7 +77,7 @@ export class InteractiveMapComponent {
   states$!: Observable<any>;
   stateService = inject(StateService);
   selectedElement$: Observable<string>;
-  public zoomSettings: object = { enable: false, maxZoom: 20 };
+  public zoomSettings: object = { enable: true, maxZoom: 20 };
 
   constructor(private service: DataService, private http: HttpClient) {
     this.selectedElement$ = this.stateService.selectedElements$.pipe(
@@ -118,7 +118,8 @@ export class InteractiveMapComponent {
                     fontStyle: 'Sans-serif',
                     fontWeight: 'Bold',
                   },
-                  format:
+                  format:elements.state?
+                    '<b>County: ${name}</b><br><b>Average value: ${value}</b>':
                     '<b>State: ${name}</b><br><b>Average value: ${value}</b>',
                 },
                 highlightSettings: {
@@ -126,7 +127,7 @@ export class InteractiveMapComponent {
                   fill: '#A3B0D0',
                 },
                 selectionSettings: {
-                  enable: true,
+                  enable: elements.state?false:true,
                   fill: '#4C515B',
                   opacity: 1,
                 },
@@ -150,7 +151,7 @@ export class InteractiveMapComponent {
     const selectedShape: string = (args.data as any)['name'];
     if (this.stateService.state == null) {
       this.stateService.setSelectedState(selectedShape);
-    } else this.stateService.setSelectedCounty(selectedShape);
+    } ;
   }
 
   returnToUSAMap() {
