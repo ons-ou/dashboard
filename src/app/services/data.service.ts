@@ -40,7 +40,7 @@ export class DataService {
       switchMap((elements) => {
         return this.apiService.averageValue(elements);
       }),
-      tap(()=> console.log("change")),
+      tap((res)=> console.log(res)),
     );
 
     this.numberOfRecords$ = selectedElements$.pipe(
@@ -54,6 +54,7 @@ export class DataService {
     );
 
     this.avgValuesByName$ = selectedElements$.pipe(
+      distinctUntilChanged((prev, next)=> !(prev.county == next.county)),
       switchMap((elements) => this.apiService.averageValueByName(elements))
     )
 
