@@ -1,0 +1,12 @@
+<mat-accordion class="rounded" style="display: flex; flex-direction: column; align-items: center;">
+  <mat-form-field>
+    <mat-label>Select Element</mat-label>
+    <mat-select [(value)]="selectedElement" (selectionChange)="updateSelectedElements('element')">
+      <mat-option *ngFor="let element of elements" [value]="element">{{ element }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <app-date-select></app-date-select>
+
+ 
+</mat-accordion>

@@ -1,23 +1,34 @@
-import { Component, EventEmitter, Input, Output, SimpleChange, inject } from '@angular/core';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { Component, inject } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-import { AqiDataService } from '../../services/aqi-data.service';
-import { ComponentType } from '../../enums/component-type.enum';
+import * as USAMapData from '../../../assets/United States of America.json';
 import { CardComponent } from '../card/card.component';
-import { MapComponent } from '../map/map.component';
-import { Observable, of } from 'rxjs';
-import { AqiSeasonChartComponent } from '../chart/aqi-season-chart.component';
+import { DataService } from '../../services/data.service';
+import { ChartComponent } from '../chart/chart.component';
+import { StateService } from '../../services/state.service';
+import {
+  categoryColors,
+  colorsList,
+  getCategories,
+} from '../../utils/categories';
+import { Feature, Point, GeoJsonProperties } from 'geojson';
+import {
+  Observable,
+} from 'rxjs';
+import { InteractiveMapComponent } from '../interactive-map/interactive-map.component';import { NavbarComponent } from '../navbar/navbar.component';
+import { DateSelectComponent } from '../date-select/date-select.component';
+
 @Component({
-  selector: 'app',
+  selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
   standalone: true,
@@ -33,96 +44,43 @@ import { AqiSeasonChartComponent } from '../chart/aqi-season-chart.component';
     MatCardModule,
     CommonModule,
     CardComponent,
-    MapComponent,
-    AqiSeasonChartComponent,
-
-  ],
+    ChartComponent,
+    InteractiveMapComponent,  
+    NavbarComponent,
+    DateSelectComponent
+  ]
 })
 export class DashboardComponent {
-[x: string]: any;
-  private breakpointObserver = inject(BreakpointObserver);
-  service = inject(AqiDataService);
-  data$ = this.service.aqiData$;
+  service = inject(DataService);
+  stateService = inject(StateService);
 
-  avgaqi$: Observable<string>| null;
-  obssum$: Observable<string>| null;
-  showCounties: boolean = false
-  stateNames: string[] = []; 
-  years: string[] = []; 
-  selectedState: string = '';
-  selectedYear: string = '';
-  selectedYearS: string = '';
-  selectedStateS: string = '';
+  element$ = this.stateService.selectedElements$.pipe(map((el) => el.element));
+  
+  avgaqi$ = this.service.averageValue$;
+  observationSum$ = this.service.numberOfObservations$;
+  recordsSum = this.service.numberOfRecords$;
+  avgaqiByHour$ = this.service.maxCountByHour$;
+  avgaqiByDay$ = this.service.avgValuesByDay$;
+  pollutionElements$ = this.service.pollutionElements$;
+  avgaqiBySeason$ = this.service.avgValueBySeason$;
+  aqiCategories$ = this.service.categories$;
 
-  constructor() {
-    this.avgaqi$ = this.service.averageAqi();
-    this.obssum$ = this.service.numberOfObservations();
+  colors = colorsList;
+
+
+  cards = [ 
+  { title: 'Avg', cols: 1, rows: 1 },
+  { title: 'Records Count', cols: 1, rows: 1 },
+  { title: 'Obs Count', cols: 1, rows: 1 },
+  { title: 'Categories', cols: 3, rows: 3 },
+  { title: 'Seasonal Trends', cols: 3, rows: 3 },
+  { title: 'hour', cols: 3, rows: 3 },
+  { title: 'day', cols: 3, rows: 3 },
+]
+
+
+  getValues(list: any[], key: string): any[] {
+    return list.map((el) => el[key]);
   }
-
-  ngOnInit() {
-    this.service.aqiData$.subscribe(data => {
-      this.stateNames = Array.from(new Set(data.map((item: { state_name: any; }) => item.state_name)));
-      this.years = ["2016", "2017"]; // You can initialize years here or populate it from service if available.
-    });
-  }
-
-  search() {
-    console.log(this.selectedState);
-    this.selectedStateS = this.selectedState;
-    this.selectedYearS = this.selectedYear;
-   
-    if (this.selectedStateS && this.selectedYearS) {
-      console.log(this.selectedStateS);
-      this.service.averageAqiForStateAndYear(this.selectedStateS, this.selectedYear).subscribe(avgAqi => {
-        console.log(avgAqi);
-        this.avgaqi$ = of(avgAqi);
-      });
-      this.service.numberOfObservationsForStateAndYear(this.selectedStateS, this.selectedYear).subscribe(obsSum => {
-        console.log(obsSum);
-        this.obssum$ = of(obsSum);
-      });
-      this.data$ = this.service.getDataForStateAndYear(this.selectedStateS, this.selectedYear);
-    } else {
-      this.avgaqi$ = this.service.averageAqi();
-      this.obssum$ = this.service.numberOfObservations();
-      this.data$ = this.service.aqiData$;
-    }
-    console.log(this.selectedStateS,this.selectedYearS);
-  }
-
-
-  ngOnChanges(changes: SimpleChange){
-    console.log(changes)
-  }
-  toggleCounties(value: boolean) {
-    this.showCounties = value;
-}
-
-  /** Based on the screen size, switch from standard to one column per row */
-  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(({ matches }) => {
-      if (matches) {
-        return [
-          { title: 'Avg', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
-          { title: 'Records Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD  },
-          { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD  },
-          { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP  },
-          { title: 'Distribution', cols: 3, rows: 2 },
-          { title: 'Seasonal Trends', cols: 3, rows: 1,componentType: ComponentType.SeasonalTrends },
-          { title: 'Quality', cols: 3, rows: 1 },
-        ];
-      }
-
-      return [
-        { title: 'Avg', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
-        { title: 'Records Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
-        { title: 'Obs Count', cols: 1, rows: 1, componentType: ComponentType.MINICARD },
-        { title: 'Map', cols: 3, rows: 2, componentType: ComponentType.MAP },
-        { title: 'Distribution', cols: 1, rows: 2 },
-        { title: 'Seasonal Trends', cols: 2, rows: 1 ,componentType: ComponentType.SeasonalTrends },
-        { title: 'Quality', cols: 2, rows: 1 },
-      ];
-    })
-  );
 
 }

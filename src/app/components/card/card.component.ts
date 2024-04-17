@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatCard, MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
   imports: [MatCardModule, MatIconModule, MatMenuModule],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardComponent {
   @Input()
@@ -23,6 +24,6 @@ export class CardComponent {
   title: string = ""
 
   @Input()
-  value: string = ""
+  value: string | number = ""
 
 }

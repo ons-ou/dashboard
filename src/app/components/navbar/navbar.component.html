@@ -1,0 +1,39 @@
+@if(isSmallScreen$ | async){
+<mat-toolbar>
+  <span class="title">Dashboard</span>
+
+  <span class="spacer"></span>
+  <span>{{ selectedElement$ | async }} Data</span>
+  <mat-menu #menu="matMenu">
+    @for (element of elements; track $index) {
+    <button
+      mat-menu-item
+      [class.selected]="(selectedElement$ | async) == element"
+      (click)="selectElement(element)"
+    >
+      {{ element }} Data
+    </button>
+    }
+  </mat-menu>
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+</mat-toolbar>
+}@else {
+<p class="menu">
+  <mat-toolbar>
+    <span class="title">Dashboard</span>
+    <span class="list">
+      @for (element of elements; track $index) {
+      <button
+        mat-button
+        [class.selected]="(selectedElement$ | async) == element"
+        (click)="selectElement(element)"
+      >
+        {{ element }} Data
+      </button>
+      }
+    </span>
+  </mat-toolbar>
+</p>
+}

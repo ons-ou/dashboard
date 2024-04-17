@@ -1,97 +1,137 @@
-<div class="grid-container">
- 
-  <div class=" title">Dashboard</div>
-  <div class="search-filter center">
-    <select class="rounded-input button" [(ngModel)]="selectedState">
-      <option value="" disabled selected>Select a State</option>
-      <option *ngFor="let state of stateNames" [value]="state">{{ state }}</option>
-    </select>
-    <select class="rounded-input button" [(ngModel)]="selectedYear">
-      <option value="" disabled selected>Select a Year</option>
-      <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-    </select>
-    <button class="rounded-button button" (click)="search()">Search</button>
-  </div>
-
-  <app-aqi-season-chart [selectedState]="selectedStateS" [selectedYear]="selectedYearS" ></app-aqi-season-chart>
-
-  
-  <mat-grid-list cols="3" rowHeight="350px">
-
-    @for (card of cards | async; track card) {
+<app-navbar></app-navbar>
+<div class="grid-container" *ngIf="element$ | async as element">
+  <div class="grid-container">
+    <div class="end-panel">
+      <app-date-select></app-date-select>
+    </div>
+    <app-interactive-map></app-interactive-map>
+    <mat-grid-list cols="3" rowHeight="250px">
       
+      @for (card of cards; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
-        <mat-card  class="dashboard-card ">
-          
-          <mat-card-content class="dashboard-card-content" *ngIf="(avgaqi$ | async) as avg  ; else loadingSpinner">
-            <div>
-              <ng-container [ngSwitch]="card.title">
-                <ng-template [ngSwitchCase]="'Avg'" *ngIf="(avgaqi$ | async) as avg  ; else loadingSpinner2 ">
-                
-                    <app-card [color]="'cornflowerblue'" [icon]="'air'" [title]="'Average value'" [value]="avg"></app-card>
-                 
-                  
-                 
-                </ng-template>
-                <ng-template #loadingSpinner2>
-
-                  <mat-spinner class="loading2" diameter="50" color="primary"></mat-spinner>
-                </ng-template>
-                <ng-template [ngSwitchCase]="'Records Count'" *ngIf="(data$ | async) as data">
-                  <app-card [color]="'dimgrey'" [icon]="'notes'" [title]="'Number of Records'" [value]="data.length"></app-card>
-                </ng-template>
-                <ng-template [ngSwitchCase]="'Obs Count'" *ngIf="(obssum$ | async) as sum">
-                  <app-card [color]="'lightseagreen'" [icon]="'search'" [title]="'Number of Observations'" [value]="sum"></app-card>
-                </ng-template>
-             
-                
-                <ng-template  [ngSwitchCase]="'Map'">
-             
-                  <div class="button" >
-                  <mat-radio-group aria-label="Select an option" [ngModel]="showCounties" *ngIf="(obssum$ | async) as sum">
-                    <mat-radio-button [value]="false" (click)="toggleCounties(false)">Distribution By State</mat-radio-button>
-                    <mat-radio-button class="layout" [value]="true" (click)="toggleCounties(true)">Distribution By County</mat-radio-button>
-                </mat-radio-group>
-              </div>
-                    <div class="move-to-top">
-                    <app-map [selectedState]="selectedState"  [showCounties]="showCounties"></app-map>
-                  </div>
-             
-                </ng-template>
+        <mat-card class="dashboard-card">
+          <mat-card-content class="dashboard-card-content center-content">
+            <ng-container [ngSwitch]="card.title">
+              <div class="center">
               
-                
-               
-               
-                <ng-template ngSwitchDefault>
-                 
+
+                <ng-template
+                  [ngSwitchCase]="'Avg'"
+                  *ngIf="avgaqi$ | async as avg"
+                >
+                  <app-card
+                    [color]="'cornflowerblue'"
+                    [icon]="'air'"
+                    [title]="'Average value'"
+                    [value]="avg"
+                  ></app-card>
                 </ng-template>
-                
-              </ng-container>
-            </div>
+                <ng-template
+                  [ngSwitchCase]="'Records Count'"
+                  *ngIf="recordsSum | async as rec"
+                >
+                  <app-card
+                    [color]="'dimgrey'"
+                    [icon]="'notes'"
+                    [title]="'Number of Records'"
+                    [value]="rec"
+                  ></app-card>
+                </ng-template>
+                <ng-template
+                  [ngSwitchCase]="'Obs Count'"
+                  *ngIf="observationSum$ | async as sum"
+                >
+                  <app-card
+                    [color]="'lightseagreen'"
+                    [icon]="'search'"
+                    [title]="'Number of Observations'"
+                    [value]="sum"
+                  ></app-card>
+                </ng-template>
+              </div>
+              <ng-template
+                [ngSwitchCase]="'Categories'"
+                *ngIf="aqiCategories$ | async as categories"
+              >
+                <app-chart
+                  [canvasId]="'categories'"
+                  [labels]="getValues(categories, 'name')"
+                  [values]="getValues(categories, 'value')"
+                  [colors]="colors"
+                  [title]="'Distribution of AQI Categories in the USA'"
+                  [chartType]="'doughnut'"
+                ></app-chart>
+              </ng-template>
+
+              <ng-template
+                [ngSwitchCase]="'Seasonal Trends'"
+                *ngIf="avgaqiBySeason$ | async as seasons"
+              >
+                <app-chart
+                  [canvasId]="'seasons'"
+                  [chartType]="'bar'"
+                  [colors]="colors"
+                  [labels]="getValues(seasons, 'season')"
+                  [values]="getValues(seasons, 'value')"
+                  [title]="'Average Values by Season'"
+                  [legendDisplay]="false"
+                  [axis]="{ x: 'Season', y: 'Average Value' }"
+                ></app-chart>
+              </ng-template>
+
+              @if (element !== "AQI") {
+              <ng-template
+                [ngSwitchCase]="'hour'"
+                *ngIf="avgaqiByHour$ | async as hours"
+              >
+                <app-chart
+                  [canvasId]="'hour'"
+                  [chartType]="'bar'"
+                  [colors]="colors"
+                  [labels]="getValues(hours, 'label')"
+                  [values]="getValues(hours, 'value')"
+                  [title]="'Max Value Count'"
+                  [legendDisplay]="false"
+                  [axis]="{ x: 'Hour', y: 'Count' }"
+                ></app-chart>
+              </ng-template>
+            } @else {
+              
+              <ng-template
+                [ngSwitchCase]="'hour'"
+                *ngIf="pollutionElements$ | async as elements"
+              >
+                <app-chart
+                  [canvasId]="'elements'"
+                  [chartType]="'pie'"
+                  [colors]="colors"
+                  [labels]="getValues(elements, 'name')"
+                  [values]="getValues(elements, 'value')"
+                  [title]="'Pollution Distribution'"
+                ></app-chart>
+              </ng-template>
+            }
+              <ng-template
+                [ngSwitchCase]="'day'"
+                *ngIf="avgaqiByDay$ | async as days"
+              >
+                <app-chart
+                  [canvasId]="'day'"
+                  [chartType]="'bar'"
+                  [colors]="colors"
+                  [labels]="getValues(days, 'label')"
+                  [values]="getValues(days, 'value')"
+                  [title]="'Average Value by Day'"
+                  [legendDisplay]="false"
+                  [axis]="{ x: 'Day', y: 'Average value' }"
+                ></app-chart>
+              </ng-template>
+
+            </ng-container>
           </mat-card-content>
-          <ng-template #loadingSpinner>
-            <!-- Your loading spinner component goes here -->
-            <!-- For example, you can use Angular Material's spinner -->
-            <mat-spinner class="loading" diameter="50" color="primary"></mat-spinner>
-          </ng-template>
-         
         </mat-card>
       </mat-grid-tile>
-    }
-  
- 
-  </mat-grid-list>
- 
-   
-  
-
-  
-
- 
+      }
+    </mat-grid-list>
+  </div>
 </div>
-
-<ng-template #loading>
-  
-  <mat-spinner></mat-spinner>
-  
-</ng-template>
