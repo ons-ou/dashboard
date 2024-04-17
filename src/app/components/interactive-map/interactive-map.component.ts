@@ -21,16 +21,19 @@ import {
   forkJoin,
   map,
   switchMap,
+  zip,
 } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { states } from '../../utils/states';
 import { categoryColors, getCategories } from '../../utils/categories';
 import { color } from 'd3';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-interactive-map',
   standalone: true,
-  imports: [MapsModule, CommonModule, AsyncPipe],
+  imports: [MapsModule, CommonModule, AsyncPipe, MatCardModule, MatProgressSpinnerModule],
   providers: [
     MapsTooltipService,
     LegendService,
@@ -99,9 +102,8 @@ export class InteractiveMapComponent {
         let mapData = elements.state
           ? this.counties$.pipe(map((counties) => counties[elements.state!]))
           : this.states$;
-        return combineLatest([mapData, this.service.avgValuesByName$]).pipe(
+        return zip(mapData, this.service.avgValuesByName$).pipe(
           map(([mapData, values]) => {
-
             return [
               {
                 shapeData: mapData,
@@ -127,7 +129,7 @@ export class InteractiveMapComponent {
                   fill: '#A3B0D0',
                 },
                 selectionSettings: {
-                  enable: elements.state?false:true,
+                  enable: true,
                   fill: '#4C515B',
                   opacity: 1,
                 },
@@ -151,7 +153,7 @@ export class InteractiveMapComponent {
     const selectedShape: string = (args.data as any)['name'];
     if (this.stateService.state == null) {
       this.stateService.setSelectedState(selectedShape);
-    } ;
+    } else this.stateService.setSelectedCounty(selectedShape);
   }
 
   returnToUSAMap() {
@@ -193,7 +195,6 @@ export class InteractiveMapComponent {
       let colors = categories.map((
         (category, index) => ({from: category.values[0], to: category.values[1], color: [catColors[index]]})
       ))
-      console.log(colors)
       return colors
   }
 }

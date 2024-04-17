@@ -17,7 +17,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 })
 export class NavbarComponent {
 
-  elements = ['AQI', 'CO', 'NO2', 'SO2', 'Pb', 'Ozone', 'PM10', 'PM2.5']
+  elements = ['AQI', 'CO', 'NO2', 'SO2', 'Ozone', 'PM10', 'PM2.5']
 
   breakpointObserver = inject(BreakpointObserver)
   stateService = inject(StateService)
