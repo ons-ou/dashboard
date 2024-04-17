@@ -69,7 +69,7 @@ export class DashboardComponent {
 
 
   cards =     [
-    { title: 'Map', cols: 3, rows: 3 },   
+     
   { title: 'Avg', cols: 1, rows: 1 },
   { title: 'Records Count', cols: 1, rows: 1 },
   { title: 'Obs Count', cols: 1, rows: 1 },

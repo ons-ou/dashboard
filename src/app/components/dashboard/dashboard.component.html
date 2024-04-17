@@ -4,16 +4,16 @@
     <div class="end-panel">
       <app-date-select></app-date-select>
     </div>
+    <app-interactive-map></app-interactive-map>
     <mat-grid-list cols="3" rowHeight="250px">
+      
       @for (card of cards; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card class="dashboard-card">
           <mat-card-content class="dashboard-card-content center-content">
             <ng-container [ngSwitch]="card.title">
               <div class="center">
-                <ng-template [ngSwitchCase]="'Map'">
-                  <app-interactive-map></app-interactive-map>
-                </ng-template>
+              
 
                 <ng-template
                   [ngSwitchCase]="'Avg'"

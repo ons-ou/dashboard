@@ -2,7 +2,11 @@
     padding: 20px;
     background: linear-gradient(180deg, #f6fcff 0%, #d0e5fd);
   }
-  
+  .end-panel{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  }
   .title {
     place-self: center;
     text-align: center;
