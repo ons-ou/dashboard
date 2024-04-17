@@ -1,0 +1,10 @@
+.center-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.rounded {
+  border-radius: 25 px;
+}
+  

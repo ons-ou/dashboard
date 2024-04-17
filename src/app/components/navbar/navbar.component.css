@@ -1,0 +1,27 @@
+p {
+    background-color: white;
+    margin-bottom: 0;
+    width: 100%
+}
+
+.title {
+    font-size: 2rem;
+    line-height: 1.5rem;
+    padding: 20px;
+    color: #014357;
+    font-weight: 900;
+    margin-right: 7%;
+}
+
+.selected{
+    background-color: #e5e2e2;
+}
+
+.list {
+    display: flex;
+    gap: 1rem; 
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
