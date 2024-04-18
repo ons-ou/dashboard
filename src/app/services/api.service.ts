@@ -87,5 +87,14 @@ export class ApiService {
   ) {
     return this.get<{ name: string; value: number; }[]>('/avg_by_state', elements);
   }
-
+  airQualityCategory(
+    elements : SelectedElements
+  ) {
+    return this.get<{ name: string; value: number; }[]>('/air_quality_category', elements);
+  }
+  airQualityComparaison(
+    elements : SelectedElements
+  ) {
+    return this.get<{ name: string; value: number; }[]>('/air_quality_comparaison', elements);
+  }
 }

@@ -19,11 +19,7 @@ export class DataService {
   maxCountByHour$: Observable<{ label: string; value: number }[]>;
 
   pollutionElements$: Observable<{ name: string; value: number }[]> = of([]);
-  categories$: Observable<{ name: string; value: number }[]> = of([
-    { name: 'Good', value: 30 },
-    { name: 'Bad', value: 20 },
-    { name: 'Average', value: 60 },
-  ]);  
+  categories$: Observable<{ name: string; value: number }[]> = of([]);  
 
   private randomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -59,23 +55,11 @@ export class DataService {
     )
 
     this.pollutionElements$ = selectedElements$.pipe(
-      map(() => [
-        { name: 'NO2', value: this.randomInt(50, 100) },
-        { name: 'SO2', value: this.randomInt(50, 100) },
-        { name: 'CO2', value: this.randomInt(50, 100) },
-        { name: 'PM10', value: this.randomInt(50, 100) },
-      ])
+      switchMap((elements)=> this.apiService.airQualityComparaison(elements))
     );
 
     this.categories$ = selectedElements$.pipe(
-      map(() => [
-        { name: 'Good', value: this.randomInt(0, 200) },
-        { name: 'Moderate', value: this.randomInt(0, 200) },
-        { name: 'Unhealthy for Sensitive Groups', value: this.randomInt(0, 200) },
-        { name: 'Unhealthy', value: this.randomInt(0, 200) },
-        { name: 'Hazardous', value: this.randomInt(0, 200) },
-
-      ])
+      switchMap((elements)=> this.apiService.airQualityCategory(elements))
     );
 
     this.avgValuesByDay$ = selectedElements$.pipe(
