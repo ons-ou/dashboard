@@ -3,6 +3,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ChartComponent } from '../chart/chart.component';
 import {
   Observable,
+  Subject,
   catchError,
   combineLatest,
   map,
@@ -66,6 +67,9 @@ export class ChartSelectComponent {
     'Pollutant Elements',
   ];
 
+  isLoading$ = new Subject<boolean>();
+
+
   ngOnInit() {
     this.chartForm = this.formBuilder.group({
       selectedTitle: [0], // Initial value
@@ -73,6 +77,7 @@ export class ChartSelectComponent {
 
     this.chartData$ = this.chartForm.valueChanges.pipe(
       startWith({ selectedTitle: 0 }), // Emit initial value
+      tap(()=> this.isLoading$.next(true)),
       map((source) => source.selectedTitle),
       switchMap((value) =>
         combineLatest([this.chartData[value], of(value)]).pipe(
@@ -83,7 +88,9 @@ export class ChartSelectComponent {
         title: this.chartTitles[value],
         data: chartData,
         type: this.chartTypes[value],
-      }))
+      })),
+      tap(()=> this.isLoading$.next(false)),
+      tap((r)=> console.log(r)),
     );
   }
 

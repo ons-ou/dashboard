@@ -8,7 +8,7 @@
     </mat-select>
   </mat-form-field>
 </form>
-<div *ngIf="chartData$ | async as chart; else loading;">
+<div *ngIf="chartData$ | async as chart;">
   @if(chart.data.length !== 0){
   <app-chart
     [canvasId]="'chart'"
@@ -24,9 +24,8 @@
   }
 </div>
 
-<ng-template #loading>
+<div *ngIf="isLoading$ | async;" #loading>
     <span style="display: flex; justify-content: center; align-items: center; height: 500px;">
       <mat-spinner></mat-spinner>
     </span>
-    </ng-template>
-  
+</div>  

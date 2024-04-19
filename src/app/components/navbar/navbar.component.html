@@ -1,6 +1,6 @@
 @if(isSmallScreen$ | async){
 <mat-toolbar>
-  <span class="title">Dashboard</span>
+  <span class="title">USA Air Quality Dashboard</span>
 
   <span class="spacer"></span>
   <span>{{ selectedElement$ | async }} Data</span>
@@ -22,7 +22,7 @@
 }@else {
 <p class="menu">
   <mat-toolbar>
-    <span class="title">Dashboard</span>
+    <span class="title">USA Air Quality Dashboard</span>
     <span class="list">
       @for (element of elements; track $index) {
       <button

@@ -10,6 +10,7 @@ import {
   MapsComponent,
   HighlightService,
   SelectionService,
+  ZoomService,
 } from '@syncfusion/ej2-angular-maps';
 import { DataService } from '../../services/data.service';
 import { StateService } from '../../services/state.service';
@@ -45,7 +46,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     SelectionService,
     ColorMappingSettings,
     LayerSettings,
-    ZoomSettings,
+    ZoomService
   ],
   templateUrl: './interactive-map.component.html',
   styleUrl: './interactive-map.component.css',
@@ -208,8 +209,12 @@ export class InteractiveMapComponent {
     // Generate color mapping for each range
     let colors = [];
     for (let i = 3; i >= 0; i--) {
-      const from = Math.floor(min + i * step);
-      const to = Math.floor(min + (i + 1) * step);
+      let from =parseFloat((min + i * step).toFixed(2));
+      let to = parseFloat((min + (i + 1) * step).toFixed(2));
+      if (Math.floor(from) !== Math.floor(to)){
+        from = Math.floor(from)
+        to = Math.floor(to)
+      }
       colors.push({ from, to, color: [catColors[i]] });
     }
 
