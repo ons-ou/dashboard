@@ -1,0 +1,32 @@
+<form [formGroup]="chartForm">
+  <mat-form-field>
+    <mat-label>Chart Title</mat-label>
+    <mat-select formControlName="selectedTitle">
+      <mat-option *ngFor="let title of chartNumbers" [value]="title">{{
+        chartTitles[title]
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+<div *ngIf="chartData$ | async as chart; else loading;">
+  @if(chart.data.length !== 0){
+  <app-chart
+    [canvasId]="'chart'"
+    [chartType]="chart.type"
+    [colors]="colors"
+    [labels]="getValues(chart.data, 'name')"
+    [values]="getValues(chart.data, 'value')"
+    [title]="chart.title"
+    [legendDisplay]="chart.type !== 'bar'"
+  ></app-chart>
+  }@else {
+  <h1>This data isn't currently available</h1>
+  }
+</div>
+
+<ng-template #loading>
+    <span style="display: flex; justify-content: center; align-items: center; height: 500px;">
+      <mat-spinner></mat-spinner>
+    </span>
+    </ng-template>
+  

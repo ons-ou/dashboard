@@ -21,10 +21,6 @@ export class DataService {
   pollutionElements$: Observable<{ name: string; value: number }[]> = of([]);
   categories$: Observable<{ name: string; value: number }[]> = of([]);  
 
-  private randomInt(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
   constructor() {
     
     let selectedElements$ = this.stateService.selectedElements$.pipe(
@@ -36,7 +32,6 @@ export class DataService {
       switchMap((elements) => {
         return this.apiService.averageValue(elements);
       }),
-      tap((res)=> console.log(res)),
     );
 
     this.numberOfRecords$ = selectedElements$.pipe(

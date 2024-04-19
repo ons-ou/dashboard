@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { switchMap, tap, Observable, map } from 'rxjs';
+import { switchMap, tap, Observable, map, catchError, of } from 'rxjs';
 import { StateService, SelectedElements } from './state.service';
 
 @Injectable({
@@ -35,7 +35,7 @@ export class ApiService {
       params = params.set('county', elements.county);
     }
 
-    return this.http.get<S>(url, { params });
+    return this.http.get<S>(url, { params })
   }
 
   averageValueByName(

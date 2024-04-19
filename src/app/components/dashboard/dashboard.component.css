@@ -28,15 +28,13 @@
   }
   
   .dashboard-card-content {
-    height: 80%;
-    width: 28%;
+    width: 40%;
     text-align: center;
     margin: auto;
   }
   
   .dashboard-small-card-content {
-    height: 80%;
-    width: 70%;
+    width: 100%;
     text-align: center;
     margin: auto;
   }

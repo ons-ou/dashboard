@@ -59,12 +59,11 @@ export class DateSelectComponent {
 
   constructor(private fb: FormBuilder, private stateService: StateService) {
     this.dateForm = this.fb.group({
-      selectedYear: [1985],
+      selectedYear: [1980],
       selectedMonth: ['January'],
     });
 
-    this.dateForm.valueChanges.subscribe((res) => {
-      console.log(res)
+    this.dateForm.valueChanges.subscribe(() => {
       const currentYearIndex = this.years.indexOf(this.dateForm.value.selectedYear);
       const currentMonthIndex = this.months.indexOf(this.dateForm.value.selectedMonth);
 
@@ -87,7 +86,7 @@ export class DateSelectComponent {
 
   getYearRange(): any[] {
     const currentYear = new Date().getFullYear();
-    const startYear = 1985;
+    const startYear = 1980;
     return Array.from(
       { length: currentYear - startYear + 1 },
       (_, index) => startYear + index

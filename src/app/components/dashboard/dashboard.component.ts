@@ -15,17 +15,9 @@ import { CardComponent } from '../card/card.component';
 import { DataService } from '../../services/data.service';
 import { ChartComponent } from '../chart/chart.component';
 import { StateService } from '../../services/state.service';
-import {
-  categoryColors,
-  colorsList,
-  getCategories,
-} from '../../utils/categories';
-import { Feature, Point, GeoJsonProperties } from 'geojson';
-import {
-  Observable,
-} from 'rxjs';
 import { InteractiveMapComponent } from '../interactive-map/interactive-map.component';import { NavbarComponent } from '../navbar/navbar.component';
 import { DateSelectComponent } from '../date-select/date-select.component';
+import { ChartSelectComponent } from '../chart-select/chart-select.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,7 +37,8 @@ import { DateSelectComponent } from '../date-select/date-select.component';
     CommonModule,
     CardComponent,
     ChartComponent,
-    InteractiveMapComponent,  
+    InteractiveMapComponent, 
+    ChartSelectComponent, 
     NavbarComponent,
     DateSelectComponent
   ]
@@ -65,17 +58,21 @@ export class DashboardComponent {
   avgaqiBySeason$ = this.service.avgValueBySeason$;
   aqiCategories$ = this.service.categories$;
 
-  colors = colorsList;
+  colors = [
+    'rgb(122, 228, 228)',
+    'rgb(202, 146, 239)',
+    'rgb(146, 186, 239)',
+    'rgb(239, 217, 146)',
+    'rgb(239, 146, 228)',
+    'rgb(151, 239, 146)'
+  ];
 
 
   cards = [ 
   { title: 'Avg', cols: 1, rows: 1 },
   { title: 'Records Count', cols: 1, rows: 1 },
   { title: 'Obs Count', cols: 1, rows: 1 },
-  { title: 'Categories', cols: 3, rows: 3 },
-  { title: 'Seasonal Trends', cols: 3, rows: 3 },
-  { title: 'hour', cols: 3, rows: 3 },
-  { title: 'day', cols: 3, rows: 3 },
+  { title: 'Chart', cols: 3, rows: 3 }
 ]
 
 
