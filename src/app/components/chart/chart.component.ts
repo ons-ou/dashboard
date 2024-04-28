@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   Input,
+  NgZone,
   Renderer2,
   ViewChild,
   inject,
@@ -33,6 +34,7 @@ export class ChartComponent {
   @ViewChild('chart') canvas!: ElementRef;
 
   renderer = inject(Renderer2);
+  ngZone = inject(NgZone)
 
   constructor() {
     Chart.register(...registerables);
@@ -41,8 +43,11 @@ export class ChartComponent {
   ngOnChanges(): void {
     let chart = Chart.getChart(this.canvasId);
     if (chart !== undefined) chart.destroy();
-    this.createChart();
+    this.ngZone.runOutsideAngular(() => {
+      this.createChart();
+    });
   }
+
 
   createChart(): void {
     if (!this.canvas) return;

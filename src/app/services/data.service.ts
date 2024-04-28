@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, distinctUntilChanged, map, of, shareReplay, switchMap, tap } from 'rxjs';
+import { Observable, catchError, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { StateService } from './state.service';
 import { ApiService } from './api.service';
 
@@ -25,28 +25,35 @@ export class DataService {
     
     let selectedElements$ = this.stateService.selectedElements$.pipe(
       distinctUntilChanged(),
-      shareReplay(1)
     );
 
     this.averageValue$ = selectedElements$.pipe(
       switchMap((elements) => {
-        return this.apiService.averageValue(elements);
+        return this.apiService.averageValue(elements).pipe(
+          catchError(()=> of('-1'))
+        );
       }),
     );
 
     this.numberOfRecords$ = selectedElements$.pipe(
-      switchMap((elements) => this.apiService.numberOfRecords(elements))
+      switchMap((elements) => this.apiService.numberOfRecords(elements).pipe(
+        catchError(()=> of('0')))
+      )
     );
 
     this.numberOfObservations$ = selectedElements$.pipe(
       switchMap((elements) => {
-        return this.apiService.numberOfObservations(elements);
+        return this.apiService.numberOfObservations(elements).pipe(
+          catchError(()=> of('0'))
+        );
       })
     );
 
     this.avgValuesByName$ = selectedElements$.pipe(
       distinctUntilChanged((prev, next)=> !(prev.county == next.county)),
-      switchMap((elements) => this.apiService.averageValueByName(elements))
+      switchMap((elements) => this.apiService.averageValueByName(elements).pipe(
+        catchError(()=> of([]))
+      ))
     )
 
     this.pollutionElements$ = selectedElements$.pipe(

@@ -6,55 +6,52 @@
     </div>
     <app-interactive-map></app-interactive-map>
     <mat-grid-list cols="3" rowHeight="250px">
-      
       @for (card of cards; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card class="dashboard-card">
           <mat-card-content class="dashboard-card-content center-content">
             <ng-container [ngSwitch]="card.title">
               <div class="center">
-              
-
                 <ng-template
                   [ngSwitchCase]="'Avg'"
-                  *ngIf="avgaqi$ | async as avg"
+                
                 >
+                <span *ngIf="avgaqi$ | async as avg">
                   <app-card
                     [color]="'cornflowerblue'"
                     [icon]="'air'"
                     [title]="'Average value'"
                     [value]="avg"
                   ></app-card>
+                </span>
                 </ng-template>
-                <ng-template
-                  [ngSwitchCase]="'Records Count'"
-                  *ngIf="recordsSum | async as rec"
-                >
-                  <app-card
-                    [color]="'dimgrey'"
-                    [icon]="'notes'"
-                    [title]="'Number of Records'"
-                    [value]="rec"
-                  ></app-card>
+                <ng-template [ngSwitchCase]="'Records Count'">
+                  <span *ngIf="recordsSum$ | async as rec">
+                    <app-card
+                      [color]="'dimgrey'"
+                      [icon]="'notes'"
+                      [title]="'Number of Records'"
+                      [value]="rec"
+                    ></app-card
+                  ></span>
                 </ng-template>
                 <ng-template
                   [ngSwitchCase]="'Obs Count'"
-                  *ngIf="observationSum$ | async as sum"
+                
                 >
+                <span *ngIf="observationSum$ | async as sum">
                   <app-card
                     [color]="'lightseagreen'"
                     [icon]="'search'"
                     [title]="'Number of Observations'"
                     [value]="sum"
                   ></app-card>
+                </span>
                 </ng-template>
-                <ng-template
-                [ngSwitchCase]="'Chart'"
-              >
-                <app-chart-select></app-chart-select>
-              </ng-template>
+                <ng-template [ngSwitchCase]="'Chart'">
+                  <app-chart-select></app-chart-select>
+                </ng-template>
               </div>
-
             </ng-container>
           </mat-card-content>
         </mat-card>

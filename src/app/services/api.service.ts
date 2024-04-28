@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { switchMap, tap, Observable, map, catchError, of } from 'rxjs';
+import { switchMap, Observable, map, catchError, of } from 'rxjs';
 import { StateService, SelectedElements } from './state.service';
 
 @Injectable({
@@ -11,13 +11,6 @@ export class ApiService {
   http = inject(HttpClient);
 
   states = inject(StateService);
-
-  constructor() {
-    this.states.selectedElements$.pipe(
-      switchMap((el) => this.averageValue(el)),
-      tap((res) => console.log(res))
-    );
-  }
 
   get<S>(uri: string, elements: SelectedElements) {
     const url = this.URL + uri;
@@ -35,7 +28,7 @@ export class ApiService {
       params = params.set('county', elements.county);
     }
 
-    return this.http.get<S>(url, { params })
+    return this.http.get<S>(url, { params });
   }
 
   averageValueByName(
@@ -53,14 +46,14 @@ export class ApiService {
   }
 
   numberOfRecords(elements: SelectedElements): Observable<string> {
-    return this.get<{ count: string }>('/count', elements).pipe(
-      map((val) => val.count)
+    return this.get<{ count: number }>('/count', elements).pipe(
+      map((val) => val.count.toString())
     );
   }
 
   numberOfObservations(elements: SelectedElements): Observable<string> {
-    return this.get<{ count: string }>('/observation_count', elements).pipe(
-      map((val) => val.count)
+    return this.get<{ count: number }>('/observation_count', elements).pipe(
+      map((val) => val.count.toString())
     );
   }
 
@@ -73,7 +66,9 @@ export class ApiService {
   }
 
   averageValueByHour(elements: SelectedElements) {
-    return this.get<{ label: string; value: number; }[]>('/max_hours', elements);
+    return this.get<{ label: string; value: number; }[]>('/max_hours', elements).pipe(
+      catchError(()=> of([]))
+    );
   }
 
   averageValueByCounty(

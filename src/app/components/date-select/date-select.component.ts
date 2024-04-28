@@ -47,6 +47,7 @@ export class DateSelectComponent {
     'September', 'October', 'November', 'December'
   ];
 
+  
   years: any[] = this.getYearRange();
 
   isLastMonth: boolean = false;
@@ -84,18 +85,33 @@ export class DateSelectComponent {
     );    
   }
 
-  getYearRange(): any[] {
+  getYearRange(startYear: number = 1980): any[] {
     const currentYear = new Date().getFullYear();
-    const startYear = 1980;
     return Array.from(
       { length: currentYear - startYear + 1 },
       (_, index) => startYear + index
     );
   }
 
+  updateMonths(): void {
+    let months = [
+      'January', 'February', 'March', 'April',
+      'May', 'June', 'July', 'August',
+      'September', 'October', 'November', 'December'
+    ];
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+    if (this.dateForm.value.selectedYear === currentYear) {
+      this.months = months.slice(0, currentMonth + 1);
+    } else {
+      this.months = months;
+    }
+  }
+
   updateSelectedElements(updatedElement: string): void {
     if (updatedElement === 'year') {
       this.stateService.setSelectedYear(this.dateForm.value.selectedYear);
+      this.updateMonths()
     } else if (updatedElement === 'month') {
       this.stateService.setSelectedMonth(this.months.indexOf(this.dateForm.value.selectedMonth));
     }

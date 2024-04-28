@@ -8,8 +8,23 @@
     </mat-select>
   </mat-form-field>
 </form>
-<div *ngIf="chartData$ | async as chart;">
+
+<div *ngIf="isLoading$ | async" #loading>
+  <span
+    style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 650px;
+    "
+  >
+    <mat-spinner></mat-spinner>
+  </span>
+</div>
+
+<div *ngIf="chartData$ | async as chart">
   @if(chart.data.length !== 0){
+
   <app-chart
     [canvasId]="'chart'"
     [chartType]="chart.type"
@@ -20,12 +35,15 @@
     [legendDisplay]="chart.type !== 'bar'"
   ></app-chart>
   }@else {
-  <h1>This data isn't currently available</h1>
+  <h1
+    style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 650px;
+    "
+  >
+    This data isn't currently available
+  </h1>
   }
 </div>
-
-<div *ngIf="isLoading$ | async;" #loading>
-    <span style="display: flex; justify-content: center; align-items: center; height: 500px;">
-      <mat-spinner></mat-spinner>
-    </span>
-</div>  

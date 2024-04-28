@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { StateService } from '../../services/state.service';
@@ -13,7 +13,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
   standalone: true,
   imports: [MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, AsyncPipe],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrl: './navbar.component.css', 
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
 

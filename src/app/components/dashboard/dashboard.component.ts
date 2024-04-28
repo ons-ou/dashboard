@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -41,7 +41,8 @@ import { ChartSelectComponent } from '../chart-select/chart-select.component';
     ChartSelectComponent, 
     NavbarComponent,
     DateSelectComponent
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent {
   service = inject(DataService);
@@ -51,12 +52,7 @@ export class DashboardComponent {
   
   avgaqi$ = this.service.averageValue$;
   observationSum$ = this.service.numberOfObservations$;
-  recordsSum = this.service.numberOfRecords$;
-  avgaqiByHour$ = this.service.maxCountByHour$;
-  avgaqiByDay$ = this.service.avgValuesByDay$;
-  pollutionElements$ = this.service.pollutionElements$;
-  avgaqiBySeason$ = this.service.avgValueBySeason$;
-  aqiCategories$ = this.service.categories$;
+  recordsSum$ = this.service.numberOfRecords$;
 
   colors = [
     'rgb(122, 228, 228)',

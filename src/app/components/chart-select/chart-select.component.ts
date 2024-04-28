@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartComponent } from '../chart/chart.component';
 import {
@@ -50,7 +50,7 @@ export class ChartSelectComponent {
   chartData$!: Observable<any>;
   chartForm!: FormGroup;
 
-  chartNumbers = [0, 1, 2, 3, 4, 5];
+  chartNumbers = [0, 1, 2, 3, 4];
   chartTypes = ['doughnut', 'bar', 'bar', 'bar', 'pie'];
   chartData = [
     this.dataService.categories$,
@@ -90,7 +90,6 @@ export class ChartSelectComponent {
         type: this.chartTypes[value],
       })),
       tap(()=> this.isLoading$.next(false)),
-      tap((r)=> console.log(r)),
     );
   }
 

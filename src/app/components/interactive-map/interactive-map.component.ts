@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   MapsModule,
@@ -50,6 +50,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   ],
   templateUrl: './interactive-map.component.html',
   styleUrl: './interactive-map.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InteractiveMapComponent {
   public layerOptions$: Observable<any[]>;
@@ -91,7 +92,7 @@ export class InteractiveMapComponent {
 
   constructor(private service: DataService, private http: HttpClient) {
     this.selectedElement$ = this.stateService.selectedElements$.pipe(
-      distinctUntilChanged((prev, next) => prev.state == next.state),
+      distinctUntilChanged((prev, next) => prev.state == next.state && prev.county == next.county),
       map((elements) =>
         elements.county
           ? elements.county + ', ' + elements.state
@@ -212,8 +213,8 @@ export class InteractiveMapComponent {
       let from =parseFloat((min + i * step).toFixed(2));
       let to = parseFloat((min + (i + 1) * step).toFixed(2));
       if (Math.floor(from) !== Math.floor(to)){
-        from = Math.floor(from)
-        to = Math.floor(to)
+        from = Math.round(from)
+        to = Math.round(to)
       }
       colors.push({ from, to, color: [catColors[i]] });
     }
